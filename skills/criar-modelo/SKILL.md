@@ -18,7 +18,11 @@ Objetivo: transformar o **estilo de edição** de uma ou mais referências num m
 ```bash
 python3 $ROOT/engine/analyze.py REF.mp4 --out MODELO_DIR/referencia/<ref-nome> --transcribe
 ```
-`MODELO_DIR` = `~/.editor-video/templates/<nome>` (modelo do usuário, sobrevive a atualizações do plugin). Se o usuário quiser que o modelo vá **junto com o plugin para outras pessoas**, use `$ROOT/templates/<nome>` e lembre que vai precisar de commit/push no repositório do plugin.
+`MODELO_DIR`:
+- **Padrão quando `$ROOT` é um clone git do repositório** (`git -C $ROOT rev-parse` funciona), ou seja, quem mantém o plugin: `$ROOT/templates/<nome>`. Assim o modelo vai para todos que usam o plugin depois do commit/push.
+- Caso contrário (plugin instalado, só usando): `~/.editor-video/templates/<nome>`, que fica só nesta máquina e sobrevive a atualizações.
+
+**Marca**: por padrão o modelo segue a marca do Instituto (`brand.json`). Copie da referência o ritmo, a estrutura, as animações e a *forma* da tipografia (peso, tamanho, posição, caixa), mas use as cores e fontes da marca, a não ser que o usuário peça explicitamente as cores da referência. Leia também `$ROOT/templates/clinico/REGRAS.md` (regras de publicidade médica valem para todo modelo).
 
 Leia o `resumo.md` gerado. Ele traz ritmo (cortes/min, duração dos planos, cortes no gancho, curva por terços), punch-zooms nos cortes e zooms contínuos, cor (paleta, saturação, contraste, grade sugerido), áudio (loudness, música de fundo, pausas, efeitos nos cortes) e fala (palavras/min, texto do gancho).
 

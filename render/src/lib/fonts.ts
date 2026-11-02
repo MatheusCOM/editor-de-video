@@ -23,7 +23,15 @@ export function loadBrandFonts(brand: Brand) {
     .finally(() => continueRender(handle));
 }
 
-export function fontCss(brand: Brand, which: "title" | "caption" | "body") {
+export type FontRole = "title" | "caption" | "body" | "mono";
+
+export function fontCss(brand: Brand, which: FontRole): { fontFamily: string; fontWeight: number; letterSpacing?: string } {
   const f = brand.fonts[which] || brand.fonts.body;
-  return { fontFamily: `'${f.family}', 'Montserrat', 'Inter', sans-serif`, fontWeight: f.weight };
+  const fallback = which === "mono" ? "monospace" : "sans-serif";
+  const css: { fontFamily: string; fontWeight: number; letterSpacing?: string } = {
+    fontFamily: `'${f.family}', ${fallback}`,
+    fontWeight: f.weight,
+  };
+  if (f.tracking) css.letterSpacing = f.tracking;
+  return css;
 }

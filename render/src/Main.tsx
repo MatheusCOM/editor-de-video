@@ -15,6 +15,8 @@ import {
   Logo,
   type OverlayProps,
   Progress,
+  Rotulo,
+  Assinatura,
   TextPop,
   Title,
 } from "./components/overlays";
@@ -34,6 +36,8 @@ const registry: Record<string, React.FC<OverlayProps>> = {
   counter: Counter,
   logo: Logo,
   flash: Flash,
+  rotulo: Rotulo,
+  assinatura: Assinatura,
   ...customRegistry,
 };
 

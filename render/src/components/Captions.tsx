@@ -84,9 +84,10 @@ export const Captions: React.FC<{ cs: CaptionStyle; brand: Brand; safe: Safe }> 
           textAlign: "center",
           lineHeight: 1.08,
           ...fontCss(brand, cs.font || "caption"),
+          ...(cs.weight ? { fontWeight: cs.weight } : {}),
+          ...(cs.tracking ? { letterSpacing: cs.tracking } : {}),
           fontSize,
           textTransform: cs.uppercase === false ? "none" : "uppercase",
-          letterSpacing: -0.5 * k,
         }}
       >
         {activeEmoji ? (

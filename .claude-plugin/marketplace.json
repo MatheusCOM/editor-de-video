@@ -1,11 +1,13 @@
 {
-  "name": "editor-video",
-  "owner": {"name": "negociosmcom"},
+  "name": "editor-de-video",
+  "owner": {
+    "name": "negociosmcom"
+  },
   "plugins": [
     {
-      "name": "editor-video",
+      "name": "editor-de-video",
       "source": "./",
-      "description": "Edição de vídeo automática por modelos (reels, anúncios, engenharia reversa de referências)."
+      "description": "Editor de vídeo do Instituto Clayton Guimarães: edição automática por modelos (reels, anúncios, modelos criados de referências)."
     }
   ]
 }

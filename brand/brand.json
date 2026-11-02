@@ -1,34 +1,57 @@
 {
-  "_comment": "Identidade visual PADRÃO (neutra). Substitua pelos dados da sua marca. Caminhos relativos a esta pasta.",
-  "name": "Marca Padrão",
+  "_comment": "Identidade visual do Instituto Clayton Guimarães (guia de marca 2026). Caminhos relativos a esta pasta.",
+  "name": "Instituto Clayton Guimarães",
   "colors": {
-    "primary": "#111111",
-    "secondary": "#FFFFFF",
-    "accent": "#FFD400",
-    "accent2": "#00E0A4",
-    "text": "#FFFFFF",
-    "text_dark": "#111111",
-    "caption_stroke": "#000000"
+    "primary": "#12141A",
+    "secondary": "#F2F1EE",
+    "accent": "#C9A15A",
+    "accent2": "#C9A15A",
+    "text": "#F2F1EE",
+    "text_muted": "#A8A5A0",
+    "text_dark": "#08090D",
+    "background": "#08090D",
+    "border": "#1C1E24",
+    "success": "#6FA88B",
+    "warning": "#C2705A",
+    "caption_stroke": "#08090D"
   },
   "fonts": {
-    "title": {"family": "Montserrat", "weight": 900},
-    "caption": {"family": "Montserrat", "weight": 800},
-    "body": {"family": "Inter", "weight": 600},
+    "title": {"family": "Sora", "weight": 300, "tracking": "-0.03em"},
+    "caption": {"family": "Sora", "weight": 600, "tracking": "-0.01em"},
+    "body": {"family": "Manrope", "weight": 500},
+    "mono": {"family": "JetBrains Mono", "weight": 500, "tracking": "0.14em"},
     "files": [
-      {"family": "Montserrat", "weight": 700, "file": "fonts/montserrat-latin-700-normal.woff2"},
-      {"family": "Montserrat", "weight": 800, "file": "fonts/montserrat-latin-800-normal.woff2"},
-      {"family": "Montserrat", "weight": 900, "file": "fonts/montserrat-latin-900-normal.woff2"},
-      {"family": "Inter", "weight": 400, "file": "fonts/inter-latin-400-normal.woff2"},
-      {"family": "Inter", "weight": 600, "file": "fonts/inter-latin-600-normal.woff2"}
+      {"family": "Sora", "weight": 300, "file": "fonts/sora-latin-300-normal.woff2"},
+      {"family": "Sora", "weight": 400, "file": "fonts/sora-latin-400-normal.woff2"},
+      {"family": "Sora", "weight": 600, "file": "fonts/sora-latin-600-normal.woff2"},
+      {"family": "Sora", "weight": 700, "file": "fonts/sora-latin-700-normal.woff2"},
+      {"family": "Manrope", "weight": 400, "file": "fonts/manrope-latin-400-normal.woff2"},
+      {"family": "Manrope", "weight": 500, "file": "fonts/manrope-latin-500-normal.woff2"},
+      {"family": "Manrope", "weight": 700, "file": "fonts/manrope-latin-700-normal.woff2"},
+      {"family": "Manrope", "weight": 800, "file": "fonts/manrope-latin-800-normal.woff2"},
+      {"family": "JetBrains Mono", "weight": 500, "file": "fonts/jetbrains-mono-latin-500-normal.woff2"}
     ]
   },
   "logo": {
     "file": null,
-    "position": "top-right",
-    "size": 0.14,
-    "opacity": 0.9
+    "text": "INSTITUTO CLAYTON GUIMARÃES",
+    "position": "top-left",
+    "size": 0.5,
+    "opacity": 0.85
   },
-  "radius": 18,
-  "handle": "@suamarca",
-  "cta_default": "Clique em Saiba Mais"
+  "radius": 14,
+  "handle": "",
+  "cta_default": "Agende sua avaliação",
+  "medico": {
+    "nome": "Dr. Clayton Guimarães",
+    "crm": "",
+    "rqe": "",
+    "especialidade": ""
+  },
+  "guia": {
+    "regra_do_dourado": "Um único elemento dourado preenchido por tela. Todo o resto em texto ou contorno.",
+    "fotografia": "Retratos em luz baixa, fundo escuro, sem filtro colorido. Antes/depois sempre no mesmo enquadramento.",
+    "tom_de_voz": "Direto e clínico. Frases curtas, sem promessa de número. Palavras: ajuste, leitura, acompanhamento.",
+    "espacamento": "Escala de 4: 8, 12, 16, 24, 32, 48."
+  }
 }

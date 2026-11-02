@@ -1,7 +1,16 @@
 {
-  "name": "editor-video",
+  "name": "editor-de-video",
   "version": "0.1.0",
-  "description": "Edição de vídeo automática por modelos: envie o bruto, diga o modelo (reels, anúncio Meta, ou modelos criados a partir de referências) e o Claude edita — cortes, legendas animadas em português, zooms, motion graphics, CTA e exportação 9:16/4:5/1:1.",
-  "author": {"name": "negociosmcom"},
-  "keywords": ["video", "edicao", "reels", "remotion", "ffmpeg", "legendas"]
+  "description": "Editor de vídeo: envie o bruto, diga o modelo e o Claude edita — cortes, legendas animadas em português, zooms, motion graphics, CTA e exportação 9:16/4:5/1:1. Marca do Instituto Clayton Guimarães incluída.",
+  "author": {
+    "name": "negociosmcom"
+  },
+  "keywords": [
+    "video",
+    "edicao",
+    "reels",
+    "remotion",
+    "ffmpeg",
+    "legendas"
+  ]
 }

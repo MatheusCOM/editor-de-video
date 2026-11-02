@@ -51,26 +51,32 @@ export type CaptionStyle = {
   stroke?: number; // px a 1080 de largura
   stroke_color?: string;
   shadow?: boolean;
-  font?: "caption" | "title" | "body";
+  font?: "caption" | "title" | "body" | "mono";
+  weight?: number;
+  tracking?: string;
   animation?: "pop" | "slide" | "fade" | "none";
   emphasis_scale?: number;
   background?: string | null; // faixa atrás do texto
   words: Word[];
 };
 
+export type FontRef = { family: string; weight: number; tracking?: string };
+
 export type Brand = {
   name: string;
   colors: Record<string, string>;
   fonts: {
-    title: { family: string; weight: number };
-    caption: { family: string; weight: number };
-    body: { family: string; weight: number };
+    title: FontRef;
+    caption: FontRef;
+    body: FontRef;
+    mono?: FontRef;
     files: { family: string; weight: number; file: string; style?: string }[];
   };
-  logo: { file: string | null; position: string; size: number; opacity: number };
+  logo: { file: string | null; text?: string; position: string; size: number; opacity: number };
   radius: number;
   handle?: string;
   cta_default?: string;
+  medico?: { nome?: string; crm?: string; rqe?: string; especialidade?: string };
 };
 
 export type Safe = { top: number; bottom: number; left: number; right: number };

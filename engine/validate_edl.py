@@ -9,10 +9,10 @@ import re
 import sys
 from pathlib import Path
 
-from common import SCHEMAS_DIR, load_json, load_template
+from common import SCHEMAS_DIR, load_brand, load_json, load_template
 
 KNOWN_OVERLAYS = {"title", "text_pop", "lower_third", "cta", "emoji", "progress", "logo", "flash",
-                  "image", "arrow", "checklist", "counter", "custom"}
+                  "image", "arrow", "checklist", "counter", "custom", "rotulo", "assinatura"}
 
 
 def resolve(p, base):
@@ -86,6 +86,11 @@ def validate(edl_path):
             v = ov.get("props", {}).get(k)
             if v and not v.startswith(("brand:", "http")) and not resolve(v, base).exists():
                 errors.append(f"overlays[{i}].props.{k} não encontrado: {v}")
+
+    medico = load_brand().get("medico") or {}
+    if any(o["type"] == "assinatura" for o in edl.get("overlays", [])) and not medico.get("crm"):
+        warns.append("assinatura sem CRM: preencha brand.json → medico.crm (e rqe, se houver especialidade). "
+                     "Publicidade médica exige identificação do médico.")
 
     for i, b in enumerate(edl.get("broll", [])):
         if not resolve(b["src"], base).exists():

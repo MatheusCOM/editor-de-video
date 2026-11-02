@@ -75,9 +75,10 @@ export const Title: React.FC<OverlayProps & { defaults?: Record<string, any> }> 
       >
         <div
           style={{
-            ...fontCss(brand, "title"),
+            ...fontCss(brand, props.font || "title"),
+            ...(props.weight ? { fontWeight: props.weight } : {}),
             fontSize: size,
-            lineHeight: 1.05,
+            lineHeight: 1.08,
             textAlign: "center",
             color: props.color || brand.colors.text,
             textTransform: props.uppercase === false ? "none" : "uppercase",
@@ -170,6 +171,7 @@ export const CTA: React.FC<OverlayProps> = ({ props, brand, safe }) => {
   const e3 = spring({ frame: frame - 12, fps, config: { damping: 9, stiffness: 160 } });
   const pulse = 1 + 0.04 * Math.sin((frame / fps) * Math.PI * 2 * 1.4) * (frame > 20 ? 1 : 0);
   const logo = props.show_logo !== false && brand.logo.file ? brand.logo.file : null;
+  const logoText = props.show_logo !== false && !brand.logo.file && brand.logo.text ? brand.logo.text : null;
   return (
     <AbsoluteFill
       style={{
@@ -189,14 +191,20 @@ export const CTA: React.FC<OverlayProps> = ({ props, brand, safe }) => {
       {logo ? (
         <Img src={asset(logo)} style={{ width: W * 0.32, transform: `scale(${e1})`, objectFit: "contain" }} />
       ) : null}
+      {logoText ? (
+        <div style={{ ...fontCss(brand, "mono"), fontSize: 0.026 * W, color: brand.colors.text_muted || brand.colors.text, opacity: e1 }}>
+          {logoText}
+        </div>
+      ) : null}
       {props.title ? (
         <div
           style={{
             ...fontCss(brand, "title"),
+            ...(props.weight ? { fontWeight: props.weight } : {}),
             fontSize: (props.size ?? 0.08) * W,
             color: brand.colors.text,
-            lineHeight: 1.05,
-            textTransform: "uppercase",
+            lineHeight: 1.08,
+            textTransform: props.uppercase === false ? "none" : "uppercase",
             transform: `translateY(${(1 - e1) * 60 * k}px)`,
             opacity: e1,
             textShadow: full ? "none" : textShadow(5 * k, "#000"),
@@ -221,8 +229,8 @@ export const CTA: React.FC<OverlayProps> = ({ props, brand, safe }) => {
       {props.button !== false ? (
         <div
           style={{
-            ...fontCss(brand, "title"),
-            fontSize: 0.05 * W,
+            ...fontCss(brand, props.button_font || "title"),
+            fontSize: 0.045 * W,
             background: props.button_color || brand.colors.accent,
             color: brand.colors.text_dark || "#111",
             padding: `${22 * k}px ${48 * k}px`,
@@ -451,7 +459,8 @@ export const Progress: React.FC<OverlayProps & { total: number; startAt: number 
 export const Logo: React.FC<OverlayProps> = ({ props, brand, safe }) => {
   const { width: W, height: H } = useVideoConfig();
   const file = props.src || brand.logo.file;
-  if (!file) return null;
+  const text = props.text || brand.logo.text;
+  if (!file && !text) return null;
   const pos: string = props.position || brand.logo.position || "top-right";
   const w = W * (props.size ?? brand.logo.size ?? 0.14);
   const m = W * 0.05;
@@ -463,9 +472,89 @@ export const Logo: React.FC<OverlayProps> = ({ props, brand, safe }) => {
   else {
     style.left = (W - w) / 2;
   }
+  if (!file) {
+    delete style.width;
+    if (!pos.includes("left") && !pos.includes("right")) {
+      style.left = 0;
+      style.right = 0;
+      style.textAlign = "center";
+    }
+    return (
+      <AbsoluteFill>
+        <div style={{ ...style, ...fontCss(brand, "mono"), fontSize: W * 0.022 * (props.scale ?? 1), color: props.color || brand.colors.text }}>
+          {text}
+        </div>
+      </AbsoluteFill>
+    );
+  }
   return (
     <AbsoluteFill>
       <Img src={asset(file)} style={style} />
+    </AbsoluteFill>
+  );
+};
+
+// ---------------------------------------------------------------- rótulo (mono, discreto)
+export const Rotulo: React.FC<OverlayProps> = ({ props, brand, safe, duration }) => {
+  const frame = useCurrentFrame();
+  const { fps, width: W, height: H } = useVideoConfig();
+  const op = interpolate(frame, [0, 0.3 * fps], [0, 1], clamp) * (1 - exitProgress(frame, fps, duration, 0.25));
+  const align = props.align || "left";
+  return (
+    <AbsoluteFill>
+      <div
+        style={{
+          position: "absolute",
+          left: W * safe.left,
+          right: W * safe.right,
+          top: H * yFor(props.position ?? "top", safe, safe.top + 0.02),
+          textAlign: align,
+          ...fontCss(brand, "mono"),
+          fontSize: (props.size ?? 0.028) * W,
+          color: props.color || brand.colors.accent,
+          textTransform: "uppercase",
+          opacity: op,
+        }}
+      >
+        {props.text}
+      </div>
+    </AbsoluteFill>
+  );
+};
+
+// ---------------------------------------------------------------- assinatura do médico (nome · CRM · RQE)
+export const Assinatura: React.FC<OverlayProps> = ({ props, brand, safe, duration }) => {
+  const frame = useCurrentFrame();
+  const { fps, width: W, height: H } = useVideoConfig();
+  const k = W / 1080;
+  const m = { ...(brand.medico || {}), ...props };
+  const line = interpolate(frame, [0, 0.5 * fps], [0, 1], { ...clamp, easing: (x) => 1 - Math.pow(1 - x, 3) });
+  const op = interpolate(frame, [0.15 * fps, 0.5 * fps], [0, 1], clamp) * (1 - exitProgress(frame, fps, duration, 0.3));
+  const regs = [m.crm ? `CRM ${m.crm}` : null, m.rqe ? `RQE ${m.rqe}` : null].filter(Boolean).join(" · ");
+  return (
+    <AbsoluteFill>
+      <div
+        style={{
+          position: "absolute",
+          left: W * safe.left,
+          top: H * yFor(props.position ?? "bottom", safe, 1 - safe.bottom - 0.08),
+          display: "flex",
+          flexDirection: "column",
+          gap: 10 * k,
+          opacity: op,
+        }}
+      >
+        <div style={{ width: W * 0.12 * line, height: Math.max(2, 3 * k), background: brand.colors.accent }} />
+        <div style={{ ...fontCss(brand, "title"), fontWeight: 400, fontSize: 0.045 * W, color: brand.colors.text }}>{m.nome}</div>
+        {m.especialidade ? (
+          <div style={{ ...fontCss(brand, "body"), fontSize: 0.03 * W, color: brand.colors.text_muted || brand.colors.text }}>
+            {m.especialidade}
+          </div>
+        ) : null}
+        {regs ? (
+          <div style={{ ...fontCss(brand, "mono"), fontSize: 0.024 * W, color: brand.colors.text_muted || brand.colors.text }}>{regs}</div>
+        ) : null}
+      </div>
     </AbsoluteFill>
   );
 };

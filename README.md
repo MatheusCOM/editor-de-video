@@ -1,4 +1,6 @@
-# editor-video
+# Editor de vídeo
+
+Plugin do Claude Code feito para o **Instituto Clayton Guimarães**.
 
 Edição de vídeo automática por **modelos**, feita pelo Claude. Você envia o vídeo bruto, diz o modelo ("edita no modelo reels") e recebe o vídeo pronto: cortes de silêncio e retakes, legendas animadas em português, zooms, motion graphics, CTA, color grade, áudio normalizado e exportação em 9:16, 4:5 e 1:1.
 
@@ -12,9 +14,9 @@ Pré-requisitos na máquina: **ffmpeg**, **Python 3.10+** e **Node.js 18+**.
 /plugin marketplace add <dono>/<repo>
 ```
 ```bash
-/plugin install editor-video@editor-video
+/plugin install editor-de-video@editor-de-video
 ```
-Depois, peça ao Claude: *"roda o setup do editor-video"* (ele executa `scripts/setup.sh`, que instala Remotion, faster-whisper e OpenCV e baixa o modelo de transcrição).
+Depois, peça ao Claude: *"roda o setup do editor de vídeo"* (ele executa `scripts/setup.sh`, que instala Remotion, faster-whisper e OpenCV e baixa o modelo de transcrição).
 
 > Na primeira transcrição, o modelo Whisper é baixado de `huggingface.co`. Se a rede bloquear esse domínio, as legendas ficam indisponíveis até liberar.
 
@@ -31,6 +33,7 @@ Depois, peça ao Claude: *"roda o setup do editor-video"* (ele executa `scripts/
 ## Modelos incluídos
 
 - **reels**: 9:16, cortes secos, legenda palavra por palavra, zoom de jump cut, título-gancho, barra de progresso.
+- **clinico**: identidade do Instituto (Sora leve, dourado só no essencial, assinatura com CRM, CTA sóbrio) e regras de publicidade médica. É o modelo-base até chegarem os modelos feitos das referências do Dr. Clayton.
 - **anuncio-meta**: herda reels; gancho em 3s, legenda em caixa, CTA final, saídas 9:16 + 4:5 + 1:1, zonas seguras do Meta.
 
 Modelos e marca **do usuário** ficam em `~/.editor-video/` (`templates/`, `brand/`, `components/`) e têm prioridade sobre os do plugin; atualizações do plugin não apagam essa pasta. Para distribuir um modelo para todo mundo, coloque-o em `templates/` deste repositório e publique.
@@ -49,7 +52,7 @@ bruto.mp4 ─► probe ─► transcribe (Whisper, PT-BR, tempo por palavra)
 - `engine/`: scripts Python (`probe`, `transcribe`, `edl`, `focus`, `validate_edl`, `render`, `analyze`, `compare`, `templates`)
 - `render/`: projeto Remotion (React) com os componentes visuais
 - `templates/<nome>/`: `template.json` (parâmetros) + `REGRAS.md` (regras editoriais que o Claude segue)
-- `brand/`: marca padrão neutra (fontes Montserrat e Inter, licença OFL)
+- `brand/`: marca do Instituto Clayton Guimarães (Sora, Manrope, JetBrains Mono; licença OFL). Uma marca neutra de exemplo fica em `brand-exemplos/`.
 - `schemas/edl.schema.json`: formato do EDL
 
 Para rodar à mão:
@@ -65,4 +68,4 @@ python3 engine/render.py job/edl.json
 
 ## Licenças
 - **Remotion** é gratuito para pessoas físicas e empresas com até 3 funcionários. Acima disso exige [licença da empresa](https://www.remotion.dev/license).
-- Fontes Montserrat e Inter: SIL Open Font License.
+- Fontes Sora, Manrope, JetBrains Mono, Montserrat e Inter: SIL Open Font License.
