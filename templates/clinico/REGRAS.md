@@ -33,7 +33,7 @@ Siga as regras do CFM para publicidade médica (Resolução CFM nº 2.336/2023; 
 - Corrija termos médicos, nomes de exames, medicamentos e siglas na transcrição.
 
 ## Estrutura padrão
-1. **Gancho (0–3s)**: `title` com uma frase curta e calma (ex.: "Seu metabolismo, *lido* em tempo real"); `*palavra*` vira dourado, no máximo uma palavra.
+1. **Gancho (0–3s)**: `title` com uma frase curta e calma (ex.: "Seu metabolismo, lido em tempo real"). **Sem `*destaque*`**: enquanto o título está na tela, a legenda já usa o dourado na palavra ativa (regra do dourado). Use `*palavra*` só em títulos que aparecem sem legenda simultânea.
 2. **Assinatura (3–6,5s)**: nome + CRM (automático).
 3. **Conteúdo**: explicação; use `rotulo` para contextualizar ("PROTOCOLO · SEMANA 6") e `lower_third` com moderação.
 4. **CTA (últimos ~3,5s)**: tela cheia escura (`mode: full`), título leve e botão dourado (o único dourado da tela). Título no tom da marca: "Agende sua *avaliação*" não leva destaque se o botão já é dourado. Prefira sem `*`.

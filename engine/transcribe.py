@@ -16,14 +16,20 @@ $WHISPER_MODEL_DIR, se você já tiver os arquivos baixados).
 """
 import argparse
 import os
-import tempfile
 
 from common import log, require_bin, run, save_json
 
 
-def extract_audio(src: str, dst: str):
+def load_audio(src: str):
+    """Decodifica com o ffmpeg para float32 mono 16 kHz (não depende do PyAV)."""
+    import subprocess
+
+    import numpy as np
+
     require_bin("ffmpeg")
-    run(["ffmpeg", "-y", "-v", "error", "-i", src, "-vn", "-ac", "1", "-ar", "16000", "-c:a", "pcm_s16le", dst])
+    raw = subprocess.run(["ffmpeg", "-v", "error", "-i", src, "-vn", "-ac", "1", "-ar", "16000", "-f", "s16le", "-"],
+                         capture_output=True, check=True).stdout
+    return np.frombuffer(raw, dtype=np.int16).astype(np.float32) / 32768.0
 
 
 def main():
@@ -51,12 +57,11 @@ def main():
             f"Detalhe: {e}"
         )
 
-    with tempfile.TemporaryDirectory() as td:
-        wav = os.path.join(td, "a.wav")
-        extract_audio(args.video, wav)
+    if True:
+        audio = load_audio(args.video)
         log("transcrevendo ...")
         segments, info = model.transcribe(
-            wav, language=args.language, word_timestamps=True, vad_filter=True,
+            audio, language=args.language, word_timestamps=True, vad_filter=True,
             vad_parameters={"min_silence_duration_ms": 300},
             condition_on_previous_text=False,
         )
