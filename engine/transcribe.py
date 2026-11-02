@@ -38,7 +38,7 @@ def main():
     ap.add_argument("-o", "--out", required=True)
     ap.add_argument("--model", default=os.environ.get("WHISPER_MODEL", "small"),
                     help="tiny | base | small | medium | large-v3 (padrão: small)")
-    ap.add_argument("--language", default="pt")
+    ap.add_argument("--language", default="pt", help="pt (padrão) ou auto para detectar o idioma")
     args = ap.parse_args()
 
     try:
@@ -61,7 +61,7 @@ def main():
         audio = load_audio(args.video)
         log("transcrevendo ...")
         segments, info = model.transcribe(
-            audio, language=args.language, word_timestamps=True, vad_filter=True,
+            audio, language=None if args.language == "auto" else args.language, word_timestamps=True, vad_filter=True,
             vad_parameters={"min_silence_duration_ms": 300},
             condition_on_previous_text=False,
         )

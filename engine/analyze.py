@@ -368,7 +368,7 @@ def write_md(a, out: Path):
          ]
     if a.get("speech"):
         sp = a["speech"]
-        L += ["", "## Fala", f"- {sp['words']} palavras · {sp['wpm']} palavras/min",
+        L += ["", "## Fala", f"- idioma: {sp.get('idioma')} · {sp['words']} palavras · {sp['wpm']} palavras/min",
               f"- Primeiras palavras (gancho): \"{sp['hook_text']}\""]
     L += ["", "## Olhe as imagens e responda (para escrever REGRAS.md)",
           "1. Legenda: posição vertical, tamanho (relativo à largura), fonte (peso/estilo), caixa alta?, cor base, cor/efeito da palavra ativa, contorno/sombra/caixa, quantas palavras por vez, animação de entrada (veja denso/).",
@@ -401,12 +401,12 @@ def main():
     a["rhythm"] = summarize(a)
     if args.transcribe:
         try:
-            run([sys.executable, str(Path(__file__).parent / "transcribe.py"), args.video, "-o", str(out / "transcript.json")],
+            run([sys.executable, str(Path(__file__).parent / "transcribe.py"), args.video, "-o", str(out / "transcript.json"), "--language", "auto"],
                 capture=False)
             tr = json.loads((out / "transcript.json").read_text(encoding="utf-8"))
             w = tr["words"]
             speak = (w[-1]["end"] - w[0]["start"]) if w else 0
-            a["speech"] = {"words": len(w), "wpm": round(len(w) / (speak / 60), 1) if speak else 0,
+            a["speech"] = {"idioma": tr.get("language"), "words": len(w), "wpm": round(len(w) / (speak / 60), 1) if speak else 0,
                            "hook_text": " ".join(x["text"] for x in w if x["start"] < 3.0)}
         except Exception as e:  # noqa
             log(f"transcrição indisponível: {e}")
