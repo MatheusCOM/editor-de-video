@@ -17,7 +17,8 @@ Herda o `reels`. Leia `templates/reels/REGRAS.md` para a mecânica (retakes, gan
 
 ## Publicidade médica (conferir com o usuário)
 Siga as regras do CFM para publicidade médica (Resolução CFM nº 2.336/2023; confirme a versão vigente com o Instituto):
-- Toda peça identifica o médico com **nome + CRM** (e **RQE** quando cita especialidade). O overlay `assinatura` faz isso usando `brand.json → medico`. **Não renderize a versão final com CRM vazio**: peça o número ao usuário.
+- Toda peça identifica o médico com **nome + CRM**. O overlay `assinatura` faz isso usando `brand.json → medico`. **Não renderize a versão final com CRM vazio**: peça o número ao usuário.
+- O Dr. Clayton **não tem RQE**, então não apresente ele como especialista em nenhuma área ("especialista em…", "endocrinologista" etc.), nem na tela nem nos textos. Se a fala dele fizer isso, avise o usuário. Se um dia houver RQE, preencha `medico.rqe` e `medico.especialidade` no `brand.json`.
 - Nada de sensacionalismo, garantia de resultado ou comparação depreciativa com outros profissionais.
 - Antes/depois e depoimentos de pacientes têm restrições: só use se o usuário confirmar que estão dentro das regras e autorizados pelo paciente.
 - Não exponha dados identificáveis de pacientes (nome, rosto, prontuário) sem autorização.
@@ -33,7 +34,7 @@ Siga as regras do CFM para publicidade médica (Resolução CFM nº 2.336/2023; 
 
 ## Estrutura padrão
 1. **Gancho (0–3s)**: `title` com uma frase curta e calma (ex.: "Seu metabolismo, *lido* em tempo real"); `*palavra*` vira dourado, no máximo uma palavra.
-2. **Assinatura (3–6,5s)**: nome + CRM/RQE (automático).
+2. **Assinatura (3–6,5s)**: nome + CRM (automático).
 3. **Conteúdo**: explicação; use `rotulo` para contextualizar ("PROTOCOLO · SEMANA 6") e `lower_third` com moderação.
 4. **CTA (últimos ~3,5s)**: tela cheia escura (`mode: full`), título leve e botão dourado (o único dourado da tela). Título no tom da marca: "Agende sua *avaliação*" não leva destaque se o botão já é dourado. Prefira sem `*`.
 

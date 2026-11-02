@@ -12,7 +12,7 @@ Onde a marca mora:
 - `~/.editor-video/brand/` = sobrescrita local, só nesta máquina (ex.: testar outra marca). Se existir, tem prioridade.
 - `$ROOT/brand-exemplos/neutra/` = marca neutra de exemplo.
 
-Os dados do médico (`medico.nome`, `crm`, `rqe`, `especialidade`) também ficam no `brand.json` e alimentam o overlay `assinatura`.
+Os dados do médico (`medico.nome`, `crm`, `rqe`, `especialidade`) também ficam no `brand.json` e alimentam o overlay `assinatura`. O Dr. Clayton não tem RQE: deixe `rqe` e `especialidade` vazios (a assinatura omite campos vazios).
 
 ## Passos
 1. Decida o destino (plugin ou sobrescrita local, ver acima). Para uma marca nova local, crie `~/.editor-video/brand/fonts/`, copie `$ROOT/brand/brand.json` como ponto de partida e copie as fontes de `$ROOT/brand/fonts/`.

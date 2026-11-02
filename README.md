@@ -11,7 +11,7 @@ Os modelos podem ser criados por **engenharia reversa**: mande um vídeo de refe
 Pré-requisitos na máquina: **ffmpeg**, **Python 3.10+** e **Node.js 18+**.
 
 ```bash
-/plugin marketplace add <dono>/<repo>
+/plugin marketplace add MatheusCOM/editor-de-video
 ```
 ```bash
 /plugin install editor-de-video@editor-de-video

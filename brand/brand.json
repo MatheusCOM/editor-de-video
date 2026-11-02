@@ -1,5 +1,5 @@
 {
-  "_comment": "Identidade visual do Instituto Clayton Guimarães (guia de marca 2026). Caminhos relativos a esta pasta.",
+  "_comment": "Identidade visual do Instituto Clayton Guimarães (guia de marca 2026). Caminhos relativos a esta pasta. Dr. Clayton não possui RQE: manter rqe/especialidade vazios. CRM pendente.",
   "name": "Instituto Clayton Guimarães",
   "colors": {
     "primary": "#12141A",
@@ -16,20 +16,71 @@
     "caption_stroke": "#08090D"
   },
   "fonts": {
-    "title": {"family": "Sora", "weight": 300, "tracking": "-0.03em"},
-    "caption": {"family": "Sora", "weight": 600, "tracking": "-0.01em"},
-    "body": {"family": "Manrope", "weight": 500},
-    "mono": {"family": "JetBrains Mono", "weight": 500, "tracking": "0.14em"},
+    "title": {
+      "family": "Sora",
+      "weight": 300,
+      "tracking": "-0.03em"
+    },
+    "caption": {
+      "family": "Sora",
+      "weight": 600,
+      "tracking": "-0.01em"
+    },
+    "body": {
+      "family": "Manrope",
+      "weight": 500
+    },
+    "mono": {
+      "family": "JetBrains Mono",
+      "weight": 500,
+      "tracking": "0.14em"
+    },
     "files": [
-      {"family": "Sora", "weight": 300, "file": "fonts/sora-latin-300-normal.woff2"},
-      {"family": "Sora", "weight": 400, "file": "fonts/sora-latin-400-normal.woff2"},
-      {"family": "Sora", "weight": 600, "file": "fonts/sora-latin-600-normal.woff2"},
-      {"family": "Sora", "weight": 700, "file": "fonts/sora-latin-700-normal.woff2"},
-      {"family": "Manrope", "weight": 400, "file": "fonts/manrope-latin-400-normal.woff2"},
-      {"family": "Manrope", "weight": 500, "file": "fonts/manrope-latin-500-normal.woff2"},
-      {"family": "Manrope", "weight": 700, "file": "fonts/manrope-latin-700-normal.woff2"},
-      {"family": "Manrope", "weight": 800, "file": "fonts/manrope-latin-800-normal.woff2"},
-      {"family": "JetBrains Mono", "weight": 500, "file": "fonts/jetbrains-mono-latin-500-normal.woff2"}
+      {
+        "family": "Sora",
+        "weight": 300,
+        "file": "fonts/sora-latin-300-normal.woff2"
+      },
+      {
+        "family": "Sora",
+        "weight": 400,
+        "file": "fonts/sora-latin-400-normal.woff2"
+      },
+      {
+        "family": "Sora",
+        "weight": 600,
+        "file": "fonts/sora-latin-600-normal.woff2"
+      },
+      {
+        "family": "Sora",
+        "weight": 700,
+        "file": "fonts/sora-latin-700-normal.woff2"
+      },
+      {
+        "family": "Manrope",
+        "weight": 400,
+        "file": "fonts/manrope-latin-400-normal.woff2"
+      },
+      {
+        "family": "Manrope",
+        "weight": 500,
+        "file": "fonts/manrope-latin-500-normal.woff2"
+      },
+      {
+        "family": "Manrope",
+        "weight": 700,
+        "file": "fonts/manrope-latin-700-normal.woff2"
+      },
+      {
+        "family": "Manrope",
+        "weight": 800,
+        "file": "fonts/manrope-latin-800-normal.woff2"
+      },
+      {
+        "family": "JetBrains Mono",
+        "weight": 500,
+        "file": "fonts/jetbrains-mono-latin-500-normal.woff2"
+      }
     ]
   },
   "logo": {

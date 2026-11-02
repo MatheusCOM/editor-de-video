@@ -89,7 +89,7 @@ def validate(edl_path):
 
     medico = load_brand().get("medico") or {}
     if any(o["type"] == "assinatura" for o in edl.get("overlays", [])) and not medico.get("crm"):
-        warns.append("assinatura sem CRM: preencha brand.json → medico.crm (e rqe, se houver especialidade). "
+        warns.append("assinatura sem CRM: preencha brand.json → medico.crm. "
                      "Publicidade médica exige identificação do médico.")
 
     for i, b in enumerate(edl.get("broll", [])):

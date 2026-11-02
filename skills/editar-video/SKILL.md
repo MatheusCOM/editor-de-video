@@ -12,7 +12,7 @@ Você é o editor. Os scripts fazem o trabalho mecânico; **você toma as decis�
 ## 0. Antes de começar
 - Na primeira vez em uma máquina, rode `bash $ROOT/scripts/setup.sh` (é idempotente).
 - Liste os modelos: `python3 $ROOT/engine/templates.py`. Se o usuário não disse qual modelo usar, mostre a lista e pergunte.
-- **Conteúdo médico**: este plugin é usado pelo Instituto Clayton Guimarães. Siga as regras de publicidade médica descritas em `templates/clinico/REGRAS.md` em QUALQUER modelo: identificação com nome + CRM (+ RQE), sem promessa de resultado, sem sensacionalismo, cuidado com antes/depois e dados de pacientes.
+- **Conteúdo médico**: este plugin é usado pelo Instituto Clayton Guimarães. Siga as regras de publicidade médica descritas em `templates/clinico/REGRAS.md` em QUALQUER modelo: identificação com nome + CRM (o Dr. Clayton não tem RQE: nunca apresentá-lo como especialista), sem promessa de resultado, sem sensacionalismo, cuidado com antes/depois e dados de pacientes.
 - Pasta de trabalho: crie `./edicoes/<nome-do-video>/` no diretório atual (ou onde o usuário pedir). Tudo do job fica ali.
 
 ## 1. Medir e transcrever
@@ -62,7 +62,7 @@ Placeholders `{{...}}` nos overlays do modelo (ex.: `{{GANCHO}}`, `{{CTA_TITULO}
 - `progress`: `position` (`top`/`bottom`), `height`, `color`
 - `flash`: `color`, `intensity` (transição branca de ~0.15s num corte)
 - `rotulo`: `text`, `position`, `align`, `size`, `color` (texto mono pequeno em caixa alta: datas, medidas, "PROTOCOLO · SEMANA 6")
-- `assinatura`: nome + CRM + RQE do médico (lidos de `brand.json → medico`; props podem sobrescrever `nome`, `crm`, `rqe`, `especialidade`), `position`
+- `assinatura`: nome + CRM do médico (+ RQE/especialidade só se preenchidos) (lidos de `brand.json → medico`; props podem sobrescrever `nome`, `crm`, `rqe`, `especialidade`), `position`
 - Componentes customizados de modelos criados a partir de referência: veja o `REGRAS.md` do modelo.
 
 Qualquer overlay aceita `anchor` (`start`/`end`/`full`) + `duration`/`offset` em vez de `start`/`end`, e `props.formats` para aparecer só em certos formatos.
