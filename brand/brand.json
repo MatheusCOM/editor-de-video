@@ -1,0 +1,34 @@
+{
+  "_comment": "Identidade visual PADRÃO (neutra). Substitua pelos dados da sua marca. Caminhos relativos a esta pasta.",
+  "name": "Marca Padrão",
+  "colors": {
+    "primary": "#111111",
+    "secondary": "#FFFFFF",
+    "accent": "#FFD400",
+    "accent2": "#00E0A4",
+    "text": "#FFFFFF",
+    "text_dark": "#111111",
+    "caption_stroke": "#000000"
+  },
+  "fonts": {
+    "title": {"family": "Montserrat", "weight": 900},
+    "caption": {"family": "Montserrat", "weight": 800},
+    "body": {"family": "Inter", "weight": 600},
+    "files": [
+      {"family": "Montserrat", "weight": 700, "file": "fonts/montserrat-latin-700-normal.woff2"},
+      {"family": "Montserrat", "weight": 800, "file": "fonts/montserrat-latin-800-normal.woff2"},
+      {"family": "Montserrat", "weight": 900, "file": "fonts/montserrat-latin-900-normal.woff2"},
+      {"family": "Inter", "weight": 400, "file": "fonts/inter-latin-400-normal.woff2"},
+      {"family": "Inter", "weight": 600, "file": "fonts/inter-latin-600-normal.woff2"}
+    ]
+  },
+  "logo": {
+    "file": null,
+    "position": "top-right",
+    "size": 0.14,
+    "opacity": 0.9
+  },
+  "radius": 18,
+  "handle": "@suamarca",
+  "cta_default": "Clique em Saiba Mais"
+}

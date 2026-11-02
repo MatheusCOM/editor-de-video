@@ -1,0 +1,11 @@
+{
+  "name": "editor-video",
+  "owner": {"name": "negociosmcom"},
+  "plugins": [
+    {
+      "name": "editor-video",
+      "source": "./",
+      "description": "Edição de vídeo automática por modelos (reels, anúncios, engenharia reversa de referências)."
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "description": "Reels / TikTok / Shorts — vertical, ritmo rápido, legenda palavra por palavra, zooms de ênfase.",
+  "fps": 30,
+  "formats": ["9x16"],
+  "reframe": {"mode": "blur"},
+  "cut": {
+    "mode": "speech",
+    "max_pause": 0.35,
+    "pad_before": 0.06,
+    "pad_after": 0.12,
+    "min_segment": 0.3,
+    "remove_hesitations": true
+  },
+  "captions": {
+    "enabled": true,
+    "style": "pop",
+    "reveal": "page",
+    "words_per_line": 3,
+    "max_chars": 16,
+    "position": 0.66,
+    "size": 0.078,
+    "uppercase": true,
+    "stroke": 7,
+    "shadow": true,
+    "animation": "pop",
+    "emphasis_scale": 1.15,
+    "font": "caption"
+  },
+  "zoom": {
+    "jump_cut_scale": 1.08,
+    "emphasis_scale": 1.18,
+    "emphasis_every": [4, 7]
+  },
+  "overlays": [
+    {"type": "title", "anchor": "start", "duration": 2.2, "props": {"text": "{{GANCHO}}", "position": "top", "size": 0.08, "bg": "brand", "animation": "pop"}},
+    {"type": "progress", "anchor": "full", "props": {"position": "top", "height": 10}}
+  ],
+  "grade": {"contrast": 1.06, "saturation": 1.12},
+  "audio": {"loudness_lufs": -14, "denoise": false, "music": null, "sfx": []},
+  "safe_zones": {"9x16": {"top": 0.10, "bottom": 0.20}}
+}

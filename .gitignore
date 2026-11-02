@@ -1,0 +1,7 @@
+node_modules/
+__pycache__/
+*.pyc
+edicoes/
+build/
+render/src/components/custom/user/*.tsx
+.DS_Store

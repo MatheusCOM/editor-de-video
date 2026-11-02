@@ -1,0 +1,22 @@
+{
+  "description": "Anúncio Meta Ads — gancho forte em 3s, legendas sempre ligadas, prova/benefício, CTA final. Saídas 9:16, 4:5 e 1:1.",
+  "extends": "reels",
+  "formats": ["9x16", "4x5", "1x1"],
+  "reframe": {"mode": "cover"},
+  "cut": {"max_pause": 0.3},
+  "captions": {
+    "style": "box",
+    "words_per_line": 3,
+    "position": 0.62,
+    "size": 0.074
+  },
+  "overlays": [
+    {"type": "title", "anchor": "start", "duration": 3.0, "props": {"text": "{{GANCHO}}", "position": "top", "size": 0.085, "bg": "brand", "animation": "pop"}},
+    {"type": "cta", "anchor": "end", "duration": 4.0, "props": {"title": "{{CTA_TITULO}}", "subtitle": "", "button": "Saiba mais", "mode": "overlay"}}
+  ],
+  "safe_zones": {
+    "9x16": {"top": 0.14, "bottom": 0.20, "left": 0.06, "right": 0.06},
+    "4x5": {"top": 0.07, "bottom": 0.10},
+    "1x1": {"top": 0.07, "bottom": 0.08}
+  }
+}
