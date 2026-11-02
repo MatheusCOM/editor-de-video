@@ -59,7 +59,7 @@ def parse_ytdlp(m):
         "codigo": str(m["id"]),
         "tipo": "video",
         "plataforma": (m.get("extractor_key") or "").lower(),
-        "autor": m.get("uploader_id") or m.get("uploader") or m.get("channel") or "",
+        "autor": m.get("channel") or m.get("uploader_id") or m.get("uploader") or "",
         "arquivo": m.get("arquivo") or "",
         "url": m.get("webpage_url") or "",
         "data": date.strftime("%Y-%m-%d") if date else "",

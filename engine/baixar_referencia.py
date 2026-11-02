@@ -39,6 +39,14 @@ def slug(s, n=24):
 
 def motivo(err: str) -> str:
     e = err.lower()
+    if "tunnel connection failed" in e or "unable to connect to proxy" in e:
+        return "rede bloqueada: o ambiente não alcança um domínio que o site usa (veja o status do proxy e libere o domínio)"
+    if "not a bot" in e:
+        return ("o YouTube bloqueia servidores de nuvem (\"confirme que não é um robô\"): use --cookies cookies.txt "
+                "exportado do navegador logado no YouTube, ou baixe no seu computador")
+    if "login required" in e or "rate-limit reached" in e or "requested content is not available" in e:
+        return ("o Instagram limitou os acessos (ou exige login para este post): espere uns minutos e tente de novo; "
+                "se persistir, use --cookies cookies.txt")
     if "login" in e or "cookies" in e or "rate-limit" in e or "authentication" in e:
         return "o site pediu login: use --cookies cookies.txt (exportado do navegador logado)"
     if "private" in e or "privad" in e:
@@ -68,7 +76,7 @@ def main():
     ap.add_argument("--out", default="referencias")
     ap.add_argument("--cookies", help="cookies.txt (formato Netscape) para sites que pedem login")
     ap.add_argument("--pausa", type=float, default=3.0, help="segundos entre downloads (evita bloqueio)")
-    ap.add_argument("--max-altura", type=int, default=1080)
+    ap.add_argument("--max-altura", type=int, default=1080, help="limite do lado menor do vídeo (1080 = Full HD)")
     a = ap.parse_args()
 
     try:
@@ -98,7 +106,9 @@ def main():
     for i, url in enumerate(links):
         opts = {
             "quiet": True, "no_warnings": True, "noprogress": True, "logger": _Silencioso(),
-            "format": f"bv*[height<={a.max_altura}][ext=mp4]+ba[ext=m4a]/bv*[height<={a.max_altura}]+ba/b[height<={a.max_altura}]/b",
+            # melhor vídeo até 1080 no lado MENOR (1080x1920 vertical ok); prefere h264 se a resolução empatar
+            "format": "bv*+ba/b",
+            "format_sort": [f"res:{a.max_altura}", "vcodec:h264", "acodec:aac"],
             "merge_output_format": "mp4",
             "outtmpl": str(out / "%(extractor_key)s_%(uploader_id,uploader,channel)s_%(id)s.%(ext)s"),
             "restrictfilenames": True,
@@ -123,7 +133,7 @@ def main():
                 log(f"[{i + 1}/{len(links)}] baixando {url}")
                 ydl.process_ie_result(info, download=True)
             plat = slug(info.get("extractor_key"), 12)
-            autor = slug(info.get("uploader_id") or info.get("uploader") or info.get("channel"))
+            autor = slug(info.get("channel") or info.get("uploader_id") or info.get("uploader"))
             # padroniza o nome final
             baixado = next(iter(sorted(out.glob(f"*_{vid}.mp4"), key=lambda p: p.stat().st_mtime, reverse=True)), None)
             if not baixado:
