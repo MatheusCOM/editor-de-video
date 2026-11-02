@@ -40,18 +40,18 @@ Modelos e marca **do usuário** ficam em `~/.editor-video/` (`templates/`, `bran
 
 ## Escolher referências no Instagram (por desempenho)
 
-1. No computador, com Python, instale o Instaloader e baixe **só os metadados** dos vídeos (sem os arquivos). Use uma conta secundária no `--login`:
+1. No computador, com Python, instale o Instaloader e baixe **só os metadados** de todos os posts (vídeos, imagens e carrosséis, sem os arquivos). Use uma conta secundária no `--login`:
 ```bash
 pip install instaloader
 ```
 ```bash
-instaloader --login=CONTA --reels --no-pictures --no-videos --no-captions --post-filter="is_video" PERFIL
+instaloader --login=CONTA --reels --no-pictures --no-videos --no-captions PERFIL
 ```
 2. Ranqueie (ou mande a pasta `PERFIL/` para o Claude):
 ```bash
 python3 engine/ranking_instagram.py PERFIL
 ```
-   Gera `PERFIL/ranking/ranking.md`, com o top 30 por **desempenho relativo** (views ÷ mediana dos vídeos da mesma época), e `baixar.sh`, com os comandos para baixar só os escolhidos.
+   Gera `PERFIL/ranking/ranking.md`, com o top 30 de cada tipo por **desempenho relativo** (vídeos por views; imagens e carrosséis por curtidas + comentários, porque o Instagram não informa views de foto), e `baixar.sh`, com os comandos para baixar só os escolhidos.
 3. Baixe só as referências escolhidas (`instaloader -- -CODIGO`) e peça: "cria um modelo a partir desses vídeos".
 
 ## Como funciona
