@@ -77,6 +77,8 @@ export type Brand = {
   handle?: string;
   cta_default?: string;
   medico?: { nome?: string; crm?: string; rqe?: string; especialidade?: string };
+  assinatura?: { nome?: string; registro_tipo?: string; registro?: string; extra?: string; cargo?: string };
+  segmento?: string;
 };
 
 export type Safe = { top: number; bottom: number; left: number; right: number };
@@ -90,7 +92,7 @@ export type MainProps = {
     zooms: Zoom[];
     overlays: Overlay[];
     broll: BRoll[];
-    reframe?: { mode?: "cover" | "blur" | "contain"; background?: string };
+    reframe?: { mode?: "cover" | "blur" | "contain"; background?: string; region?: { top?: number; bottom?: number } };
     style?: Record<string, any>;
   };
   brand: Brand;

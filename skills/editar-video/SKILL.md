@@ -11,8 +11,9 @@ Você é o editor. Os scripts fazem o trabalho mecânico; **você toma as decis�
 
 ## 0. Antes de começar
 - Na primeira vez em uma máquina, rode `bash $ROOT/scripts/setup.sh` (é idempotente).
-- Liste os modelos: `python3 $ROOT/engine/templates.py`. Se o usuário não disse qual modelo usar, mostre a lista e pergunte.
-- **Conteúdo médico**: este plugin é usado pelo Instituto Clayton Guimarães. Siga as regras de publicidade médica descritas em `templates/clinico/REGRAS.md` em QUALQUER modelo: identificação com nome + CRM (o Dr. Clayton não tem RQE: nunca apresentá-lo como especialista), sem promessa de resultado, sem sensacionalismo, cuidado com antes/depois e dados de pacientes.
+- **Marca primeiro: nunca edite sem saber para qual identidade visual é o vídeo.** Liste as marcas com `python3 $ROOT/engine/marcas.py` e pergunte ao usuário qual usar (mesmo que só haja uma, confirme). Se for uma marca nova, **pare e rode o onboarding da skill `configurar-marca`** antes de editar: peça o guia de marca/logo/cores/fontes de quem vai produzir.
+- Leia a marca escolhida: `python3 $ROOT/engine/marcas.py ver <slug>`. O campo `guia` traz regras visuais e de tom da marca, que valem em qualquer modelo e **têm prioridade** sobre o REGRAS.md do modelo. Se a marca tiver segmento com regras (ex.: `saude` → `$ROOT/regras/saude.md`: publicidade médica, registro profissional, sem promessa de resultado), leia e siga também.
+- Liste os modelos: `python3 $ROOT/engine/templates.py`. Se o usuário não disse qual modelo usar, mostre a lista e pergunte. Os modelos são neutros: a mesma edição muda de cara conforme a marca.
 - Pasta de trabalho: crie `./edicoes/<nome-do-video>/` no diretório atual (ou onde o usuário pedir). Tudo do job fica ali.
 
 ## 1. Medir e transcrever
@@ -25,7 +26,7 @@ python3 $ROOT/engine/transcribe.py BRUTO.mp4 -o JOB/transcript.json
 
 ## 2. Rascunho automático
 ```bash
-python3 $ROOT/engine/edl.py draft --source BRUTO.mp4 --template MODELO --transcript JOB/transcript.json --out JOB/edl.json
+python3 $ROOT/engine/edl.py draft --source BRUTO.mp4 --template MODELO --brand MARCA --transcript JOB/transcript.json --out JOB/edl.json
 ```
 Isso aplica as regras mecânicas do modelo (cortes de pausa, hesitações, zoom de jump cut, overlays padrão, enquadramento por rosto) e imprime a **linha do tempo** (`JOB/timeline.txt`).
 
@@ -62,7 +63,11 @@ Placeholders `{{...}}` nos overlays do modelo (ex.: `{{GANCHO}}`, `{{CTA_TITULO}
 - `progress`: `position` (`top`/`bottom`), `height`, `color`
 - `flash`: `color`, `intensity` (transição branca de ~0.15s num corte)
 - `rotulo`: `text`, `position`, `align`, `size`, `color` (texto mono pequeno em caixa alta: datas, medidas, "PROTOCOLO · SEMANA 6")
-- `assinatura`: nome + CRM do médico (+ RQE/especialidade só se preenchidos) (lidos de `brand.json → medico`; props podem sobrescrever `nome`, `crm`, `rqe`, `especialidade`), `position`
+- `assinatura`: nome + registro profissional da marca (`brand.json → assinatura`: `nome`, `registro_tipo`, `registro`, `extra`, `cargo`; props podem sobrescrever), `position`. O draft remove esse overlay se a marca não tiver assinatura.
+- `capa`: faixa fixa no topo (use com `reframe.region`): `titulo` (com `*destaques*`), `subtitulo`, `imagem` (fundo), `altura` (0.42), `estilo_destaque` (`caixa`/`cor`), `uppercase`, `alinhamento`
+- `cena`: fundo da marca em tela cheia (esconde a pessoa): `estilo` (`gradiente`/`solido`)
+- `item_numerado`: `numero`, `titulo`, `subtitulo` (mono), `icone` (imagem), `position`, `size`
+- `cartao`: `src` (imagem/vídeo/print) **ou** `titulo` + `texto` + `rotulo_topo`; `posicao` (`topo`/`centro`/0–1), `largura`, `proporcao`, `limite`, `rotulo` (chip), `rotacao`, `ajuste`
 - Componentes customizados de modelos criados a partir de referência: veja o `REGRAS.md` do modelo.
 
 Qualquer overlay aceita `anchor` (`start`/`end`/`full`) + `duration`/`offset` em vez de `start`/`end`, e `props.formats` para aparecer só em certos formatos.
@@ -85,4 +90,4 @@ Saída: `JOB/out/<bruto>_<modelo>_<formato>.mp4` (H.264 + AAC, −14 LUFS por pa
 Traduza o pedido para mudanças no EDL ou na transcrição, rode `sync` → `--preview` → render. Exemplos: "legenda maior" → `captions.size`; "tira o zoom do segundo 12" → remova o item de `zooms`; "começa direto na frase X" → reordene ou remova `segments`; "mais rápido" → reduza `cut.max_pause` (refaça o draft) ou use `speed`. Se o pedido for uma **preferência permanente** do modelo, proponha atualizar `template.json`/`REGRAS.md` do modelo.
 
 ## Marca
-A identidade visual vem de `brand.json` (em `~/.editor-video/brand/` se existir, senão a do plugin). Para configurar: skill `configurar-marca`.
+Cada edição usa uma marca (`edl.json → brand`). Marcas ficam em `$ROOT/brands/<slug>/` (do plugin) e `~/.editor-video/brands/<slug>/` (do usuário, com prioridade). Para criar ou ajustar uma: skill `configurar-marca`.

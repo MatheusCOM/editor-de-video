@@ -62,8 +62,27 @@ function containBox(W: number, H: number, w: number, h: number, zoom: number, yC
 }
 
 export const VideoLayer: React.FC<{ p: MainProps }> = ({ p }) => {
+  const region = p.edl.reframe?.region;
+  if (region) {
+    // vídeo só numa faixa vertical da tela (ex.: capa em cima, fala embaixo)
+    const { height: H } = useVideoConfig();
+    const top = Math.round(H * (region.top ?? 0));
+    const h = Math.round(H * ((region.bottom ?? 1) - (region.top ?? 0)));
+    return (
+      <AbsoluteFill style={{ backgroundColor: p.edl.reframe?.background || "black" }}>
+        <div style={{ position: "absolute", left: 0, right: 0, top, height: h, overflow: "hidden" }}>
+          <VideoBox p={p} H={h} />
+        </div>
+      </AbsoluteFill>
+    );
+  }
+  const { height: H } = useVideoConfig();
+  return <VideoBox p={p} H={H} />;
+};
+
+const VideoBox: React.FC<{ p: MainProps; H: number }> = ({ p, H }) => {
   const frame = useCurrentFrame();
-  const { fps, width: W, height: H } = useVideoConfig();
+  const { fps, width: W } = useVideoConfig();
   const t = frame / fps;
   const { edl, sourceSize } = p;
   const seg = segmentAt(edl.segments, t);
@@ -80,15 +99,15 @@ export const VideoLayer: React.FC<{ p: MainProps }> = ({ p }) => {
   if (effective === "cover") {
     const box = coverBox(W, H, sourceSize.width, sourceSize.height, z.scale, fx, fy, 0.42);
     return (
-      <AbsoluteFill style={{ backgroundColor: "black", overflow: "hidden" }}>
+      <div style={{ position: "absolute", inset: 0, backgroundColor: "black", overflow: "hidden" }}>
         <OffthreadVideo src={src} muted style={{ position: "absolute", ...box }} />
-      </AbsoluteFill>
+      </div>
     );
   }
   const fg = containBox(W, H, sourceSize.width, sourceSize.height, z.scale, 0.5);
   const bg = coverBox(W, H, sourceSize.width, sourceSize.height, 1.15, fx, fy, 0.5);
   return (
-    <AbsoluteFill style={{ backgroundColor: edl.reframe?.background || "black", overflow: "hidden" }}>
+    <div style={{ position: "absolute", inset: 0, backgroundColor: edl.reframe?.background || "black", overflow: "hidden" }}>
       {effective === "blur" ? (
         <OffthreadVideo
           src={src}
@@ -97,6 +116,6 @@ export const VideoLayer: React.FC<{ p: MainProps }> = ({ p }) => {
         />
       ) : null}
       <OffthreadVideo src={src} muted style={{ position: "absolute", ...fg }} />
-    </AbsoluteFill>
+    </div>
   );
 };

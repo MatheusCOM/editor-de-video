@@ -12,7 +12,8 @@ from pathlib import Path
 from common import SCHEMAS_DIR, load_brand, load_json, load_template
 
 KNOWN_OVERLAYS = {"title", "text_pop", "lower_third", "cta", "emoji", "progress", "logo", "flash",
-                  "image", "arrow", "checklist", "counter", "custom", "rotulo", "assinatura"}
+                  "image", "arrow", "checklist", "counter", "custom", "rotulo", "assinatura",
+                  "capa", "cena", "item_numerado", "cartao"}
 
 
 def resolve(p, base):
@@ -82,15 +83,26 @@ def validate(edl_path):
         blob = str(ov.get("props", {}))
         if re.search(r"\{\{.+?\}\}", blob):
             errors.append(f"overlays[{i}] ({ov['type']}) ainda tem placeholder: {re.findall(r'{{.+?}}', blob)}")
-        for k in ("src", "image"):
+        for k in ("src", "image", "imagem", "icone"):
             v = ov.get("props", {}).get(k)
             if v and not v.startswith(("brand:", "http")) and not resolve(v, base).exists():
                 errors.append(f"overlays[{i}].props.{k} não encontrado: {v}")
 
-    medico = load_brand().get("medico") or {}
-    if any(o["type"] == "assinatura" for o in edl.get("overlays", [])) and not medico.get("crm"):
-        warns.append("assinatura sem CRM: preencha brand.json → medico.crm. "
-                     "Publicidade médica exige identificação do médico.")
+    if not edl.get("brand"):
+        errors.append("EDL sem 'brand': pergunte ao usuário para qual marca é o vídeo e preencha (engine/marcas.py)")
+        return errors, warns
+    try:
+        brand = load_brand(edl["brand"])
+    except SystemExit as e:
+        errors.append(str(e))
+        return errors, warns
+    ass = brand.get("assinatura") or {}
+    if any(o["type"] == "assinatura" for o in edl.get("overlays", [])):
+        if not ass.get("nome"):
+            warns.append("overlay 'assinatura' mas a marca não tem assinatura.nome: remova o overlay ou preencha a marca")
+        elif brand.get("segmento") == "saude" and not ass.get("registro"):
+            warns.append(f"assinatura sem {ass.get('registro_tipo') or 'registro profissional'}: preencha "
+                         f"brands/{edl['brand']}/brand.json → assinatura.registro. Publicidade em saúde exige identificação.")
 
     for i, b in enumerate(edl.get("broll", [])):
         if not resolve(b["src"], base).exists():

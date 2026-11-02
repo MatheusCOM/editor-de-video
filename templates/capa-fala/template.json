@@ -1,0 +1,30 @@
+{
+  "description": "Capa + fala: faixa fixa no topo com o título do vídeo (tipo thumbnail) e a pessoa falando embaixo. Jump cuts discretos, sem zoom, legenda pequena. Ideal para conteúdo educativo do dia a dia.",
+  "extends": "reels",
+  "formats": ["9x16"],
+  "reframe": {"mode": "cover", "region": {"top": 0.42, "bottom": 1.0}},
+  "cut": {"max_pause": 0.3, "pad_before": 0.06, "pad_after": 0.12, "min_segment": 0.3},
+  "captions": {
+    "style": "plain",
+    "reveal": "page",
+    "words_per_line": 7,
+    "max_chars": 38,
+    "position": 0.86,
+    "size": 0.036,
+    "uppercase": false,
+    "stroke": 0,
+    "shadow": true,
+    "animation": "none",
+    "emphasis_scale": 1.0,
+    "font": "body",
+    "weight": 600
+  },
+  "zoom": {"jump_cut_scale": null, "slow_push": null},
+  "overlays": [
+    {"type": "capa", "anchor": "full", "props": {"titulo": "{{TITULO_CAPA}}", "altura": 0.42, "estilo_destaque": "caixa"}},
+    {"type": "assinatura", "anchor": "start", "offset": 2.0, "duration": 3.5, "props": {"position": 0.47}}
+  ],
+  "grade": {"contrast": 1.03, "saturation": 1.0},
+  "audio": {"loudness_lufs": -14, "denoise": true, "music": null, "sfx": []},
+  "safe_zones": {"9x16": {"top": 0.06, "bottom": 0.10}}
+}

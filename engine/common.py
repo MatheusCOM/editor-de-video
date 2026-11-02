@@ -15,15 +15,9 @@ TEMPLATES_DIR = ROOT / "templates"
 TEMPLATE_DIRS = [USER_HOME / "templates", TEMPLATES_DIR]  # primeiro o do usuário
 
 
-def _brand_dir() -> Path:
-    if os.environ.get("EDITOR_BRAND_DIR"):
-        return Path(os.environ["EDITOR_BRAND_DIR"])
-    if (USER_HOME / "brand" / "brand.json").exists():
-        return USER_HOME / "brand"
-    return ROOT / "brand"
-
-
-BRAND_DIR = _brand_dir()
+BRANDS_DIR = ROOT / "brands"
+BRAND_DIRS = [USER_HOME / "brands", BRANDS_DIR]  # primeiro as do usuário
+REGRAS_DIR = ROOT / "regras"
 RENDER_DIR = ROOT / "render"
 SCHEMAS_DIR = ROOT / "schemas"
 
@@ -103,10 +97,41 @@ def list_templates() -> list[str]:
     return sorted(names)
 
 
-def load_brand() -> dict:
-    brand = load_json(BRAND_DIR / "brand.json")
-    brand["_dir"] = str(BRAND_DIR)
+def list_brands() -> list[str]:
+    names = set()
+    for d in BRAND_DIRS:
+        names |= {p.parent.name for p in d.glob("*/brand.json")}
+    return sorted(names)
+
+
+def brand_dir(slug: str) -> Path:
+    if os.environ.get("EDITOR_BRAND_DIR"):
+        return Path(os.environ["EDITOR_BRAND_DIR"])
+    for d in BRAND_DIRS:
+        if (d / slug / "brand.json").exists():
+            return d / slug
+    raise SystemExit(f"Marca '{slug}' não existe. Disponíveis: {', '.join(list_brands()) or '(nenhuma)'}. "
+                     "Pergunte ao usuário qual é a marca do vídeo; para uma marca nova use a skill configurar-marca.")
+
+
+def load_brand(slug: str) -> dict:
+    d = brand_dir(slug)
+    brand = load_json(d / "brand.json")
+    # compatibilidade: campo antigo "medico" → "assinatura"
+    if "assinatura" not in brand and brand.get("medico"):
+        m = brand["medico"]
+        brand["assinatura"] = {"nome": m.get("nome", ""), "registro_tipo": "CRM", "registro": m.get("crm", ""),
+                               "extra": " · ".join(x for x in [f"RQE {m['rqe']}" if m.get("rqe") else "",
+                                                                m.get("especialidade", "")] if x)}
+    brand.setdefault("segmento", "geral")
+    brand["_dir"] = str(d)
+    brand["_slug"] = slug
     return brand
+
+
+def regras_segmento(brand: dict) -> Path | None:
+    p = REGRAS_DIR / f"{brand.get('segmento', 'geral')}.md"
+    return p if p.exists() else None
 
 
 def probe(path: str | Path) -> dict:

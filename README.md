@@ -1,6 +1,6 @@
 # Editor de vídeo
 
-Plugin do Claude Code feito para o **Instituto Clayton Guimarães**.
+Plugin do Claude Code para edição automática de vídeos **multi-marca**: qualquer identidade visual, qualquer cliente. Criado para o Instituto Clayton Guimarães (marca `icg` incluída).
 
 Edição de vídeo automática por **modelos**, feita pelo Claude. Você envia o vídeo bruto, diz o modelo ("edita no modelo reels") e recebe o vídeo pronto: cortes de silêncio e retakes, legendas animadas em português, zooms, motion graphics, CTA, color grade, áudio normalizado e exportação em 9:16, 4:5 e 1:1.
 
@@ -28,15 +28,26 @@ Depois, peça ao Claude: *"roda o setup do editor de vídeo"* (ele executa `scri
 | "Faz um anúncio com esse bruto, CTA: Compre com 30% off" | `editar-video` |
 | "Legenda maior e tira o zoom do segundo 12" | `editar-video` (ajuste) |
 | "Cria um modelo igual a esse vídeo" + referência | `criar-modelo` |
-| "Usa a minha marca" + logo/cores/fontes | `configurar-marca` |
+| "Novo cliente / usa a minha marca" + guia, logo, cores, fontes | `configurar-marca` |
 
-## Modelos incluídos
+## Marcas (identidade visual)
 
+Antes de editar, o Claude **pergunta para qual marca é o vídeo**. Se for uma marca nova, ele pede a identidade (guia de marca, logo, cores, fontes, segmento, assinatura) e cadastra. Todos os modelos se adaptam à marca escolhida.
+
+- `brands/icg/`: Instituto Clayton Guimarães (segmento saúde)
+- `brands/neutra/`: marca neutra, base para marcas novas
+- Marcas de clientes ficam em `~/.editor-video/brands/<slug>/`. `python3 engine/marcas.py` lista todas.
+- Regras por segmento em `regras/` (ex.: `regras/saude.md`: publicidade em saúde, registro profissional).
+
+## Modelos incluídos (todos neutros de marca)
+
+- **capa-fala**: capa fixa no topo (título tipo thumbnail) + pessoa falando embaixo; jump cuts discretos, legenda pequena. Engenharia reversa de um reel do Dr. Clayton.
+- **lista-motion**: "N coisas que…" com itens numerados, cartões animados (prints, imagens, texto) e cenas de tela cheia; cortes rápidos com punch-in. Engenharia reversa de um reel de George Vitko.
+- **sobrio**: elegante e discreto, um único acento por tela, assinatura e CTA em tela cheia.
 - **reels**: 9:16, cortes secos, legenda palavra por palavra, zoom de jump cut, título-gancho, barra de progresso.
-- **clinico**: identidade do Instituto (Sora leve, dourado só no essencial, assinatura com CRM, CTA sóbrio) e regras de publicidade médica. É o modelo-base até chegarem os modelos feitos das referências do Dr. Clayton.
 - **anuncio-meta**: herda reels; gancho em 3s, legenda em caixa, CTA final, saídas 9:16 + 4:5 + 1:1, zonas seguras do Meta.
 
-Modelos e marca **do usuário** ficam em `~/.editor-video/` (`templates/`, `brand/`, `components/`) e têm prioridade sobre os do plugin; atualizações do plugin não apagam essa pasta. Para distribuir um modelo para todo mundo, coloque-o em `templates/` deste repositório e publique.
+Modelos e marcas **do usuário** ficam em `~/.editor-video/` (`templates/`, `brands/`, `components/`) e têm prioridade sobre os do plugin; atualizações do plugin não apagam essa pasta.
 
 ## Referências por link
 
@@ -78,12 +89,12 @@ bruto.mp4 ─► probe ─► transcribe (Whisper, PT-BR, tempo por palavra)
 - `engine/`: scripts Python (`probe`, `transcribe`, `edl`, `focus`, `validate_edl`, `render`, `analyze`, `compare`, `templates`)
 - `render/`: projeto Remotion (React) com os componentes visuais
 - `templates/<nome>/`: `template.json` (parâmetros) + `REGRAS.md` (regras editoriais que o Claude segue)
-- `brand/`: marca do Instituto Clayton Guimarães (Sora, Manrope, JetBrains Mono; licença OFL). Uma marca neutra de exemplo fica em `brand-exemplos/`.
+- `brands/<slug>/`: marcas (`brand.json` + fontes + logo); `regras/`: regras por segmento
 - `schemas/edl.schema.json`: formato do EDL
 
 Para rodar à mão:
 ```bash
-python3 engine/edl.py draft --source bruto.mp4 --template reels --transcript job/transcript.json --out job/edl.json
+python3 engine/edl.py draft --source bruto.mp4 --template reels --brand icg --transcript job/transcript.json --out job/edl.json
 ```
 ```bash
 python3 engine/render.py job/edl.json --preview

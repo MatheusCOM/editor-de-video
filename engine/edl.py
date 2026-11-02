@@ -193,7 +193,12 @@ def sync(edl_path):
 # ---------------------------------------------------------------- draft
 def draft(args):
     tpl = load_template(args.template)
-    load_brand()  # falha cedo se a marca estiver quebrada
+    if not args.brand:
+        from common import list_brands
+        raise SystemExit("Falta --brand. Marcas disponíveis: " + ", ".join(list_brands()) +
+                         ". Pergunte ao usuário para qual marca é o vídeo antes de editar "
+                         "(marca nova: skill configurar-marca).")
+    brand = load_brand(args.brand)  # falha cedo se a marca não existir
     info = probe(args.source)
     out = Path(args.out)
     job = out.parent
@@ -220,6 +225,7 @@ def draft(args):
     edl = {
         "version": 1,
         "template": args.template,
+        "brand": args.brand,
         "source": info["path"],
         "source_info": {k: info.get(k) for k in ("width", "height", "fps", "duration", "orientation", "has_audio")},
         "transcript": tr_rel,
@@ -229,7 +235,9 @@ def draft(args):
         "segments": segments,
         "captions": {**tpl.get("captions", {}), "words": []},
         "zooms": [],
-        "overlays": [dict(o) for o in tpl.get("overlays", [])],
+        # assinatura só entra se a marca tiver quem assinar
+        "overlays": [dict(o) for o in tpl.get("overlays", [])
+                     if o["type"] != "assinatura" or (brand.get("assinatura") or {}).get("nome")],
         "broll": [],
         "grade": tpl.get("grade", {}),
         "audio": tpl.get("audio", {}),
@@ -249,6 +257,7 @@ def main():
     d = sub.add_parser("draft")
     d.add_argument("--source", required=True)
     d.add_argument("--template", required=True)
+    d.add_argument("--brand", help="slug da marca (engine/marcas.py lista as disponíveis)")
     d.add_argument("--transcript")
     d.add_argument("--out", required=True)
     d.add_argument("--no-focus", dest="focus", action="store_false",

@@ -527,10 +527,18 @@ export const Assinatura: React.FC<OverlayProps> = ({ props, brand, safe, duratio
   const frame = useCurrentFrame();
   const { fps, width: W, height: H } = useVideoConfig();
   const k = W / 1080;
-  const m = { ...(brand.medico || {}), ...props };
+  const base = brand.assinatura || {
+    nome: brand.medico?.nome,
+    registro_tipo: "CRM",
+    registro: brand.medico?.crm,
+    extra: [brand.medico?.rqe ? `RQE ${brand.medico.rqe}` : "", brand.medico?.especialidade || ""].filter(Boolean).join(" · "),
+  };
+  const m: Record<string, any> = { ...base, ...props };
   const line = interpolate(frame, [0, 0.5 * fps], [0, 1], { ...clamp, easing: (x) => 1 - Math.pow(1 - x, 3) });
   const op = interpolate(frame, [0.15 * fps, 0.5 * fps], [0, 1], clamp) * (1 - exitProgress(frame, fps, duration, 0.3));
-  const regs = [m.crm ? `CRM ${m.crm}` : null, m.rqe ? `RQE ${m.rqe}` : null].filter(Boolean).join(" · ");
+  const regs = [m.registro ? `${m.registro_tipo || ""} ${m.registro}`.trim() : null, m.extra || null]
+    .filter(Boolean)
+    .join(" · ");
   return (
     <AbsoluteFill>
       <div
@@ -546,9 +554,9 @@ export const Assinatura: React.FC<OverlayProps> = ({ props, brand, safe, duratio
       >
         <div style={{ width: W * 0.12 * line, height: Math.max(2, 3 * k), background: brand.colors.accent }} />
         <div style={{ ...fontCss(brand, "title"), fontWeight: 400, fontSize: 0.045 * W, color: brand.colors.text }}>{m.nome}</div>
-        {m.especialidade ? (
+        {m.cargo ? (
           <div style={{ ...fontCss(brand, "body"), fontSize: 0.03 * W, color: brand.colors.text_muted || brand.colors.text }}>
-            {m.especialidade}
+            {m.cargo}
           </div>
         ) : null}
         {regs ? (

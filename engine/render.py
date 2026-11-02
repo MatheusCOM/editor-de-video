@@ -224,7 +224,7 @@ def prepare_public(edl: dict, brand: dict, cut: Path, base: Path, public: Path) 
         b["kind"] = "image" if src.suffix.lower() in (".png", ".jpg", ".jpeg", ".webp") else "video"
     for i, ov in enumerate(edl.get("overlays", [])):
         props = ov.get("props") or {}
-        for k in ("src", "image"):
+        for k in ("src", "image", "imagem", "icone"):
             v = props.get(k)
             if v and not str(v).startswith(("http", "brand/")):
                 if str(v).startswith("brand:"):
@@ -292,7 +292,7 @@ def main():
 
     edl = load_json(edl_path)
     tpl = load_template(edl["template"])
-    brand = load_brand()
+    brand = load_brand(edl["brand"])
     src_info = probe(edl["source"])
     build = base / "build"
     build.mkdir(exist_ok=True)
@@ -306,6 +306,9 @@ def main():
     jobs = []
     out_dir = Path(args.out) if args.out else base / ("preview" if args.preview else "out")
     out_dir.mkdir(parents=True, exist_ok=True)
+    if args.preview:  # limpa prévias antigas para a folha não misturar rodadas
+        for old in out_dir.glob("*.jpg"):
+            old.unlink()
     stem = Path(edl["source"]).stem
     d = edl["duration"]
     stills = args.at or [round(x, 2) for x in (0.4, d * 0.25, d * 0.5, d * 0.75, max(0, d - 1.0))]

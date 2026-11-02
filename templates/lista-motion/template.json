@@ -1,0 +1,30 @@
+{
+  "description": "Lista com motion graphics: 'N coisas que…' com itens numerados, cartões animados (prints, imagens ou texto) e cenas de tela cheia alternando com a pessoa. Cortes rápidos com punch-in.",
+  "extends": "reels",
+  "formats": ["9x16"],
+  "reframe": {"mode": "cover"},
+  "cut": {"max_pause": 0.25, "pad_before": 0.05, "pad_after": 0.1, "min_segment": 0.25},
+  "captions": {
+    "style": "pop",
+    "reveal": "page",
+    "words_per_line": 3,
+    "max_chars": 18,
+    "position": 0.6,
+    "size": 0.05,
+    "uppercase": false,
+    "stroke": 0,
+    "shadow": true,
+    "animation": "fade",
+    "emphasis_scale": 1.0,
+    "font": "caption",
+    "weight": 700
+  },
+  "zoom": {"jump_cut_scale": 1.1, "slow_push": null},
+  "overlays": [
+    {"type": "title", "anchor": "start", "duration": 2.5, "props": {"text": "{{GANCHO}}", "position": "top", "size": 0.075, "uppercase": false, "stroke": 0, "animation": "slide"}},
+    {"type": "cta", "anchor": "end", "duration": 3.0, "props": {"title": "{{CTA_TITULO}}", "mode": "overlay", "uppercase": false}}
+  ],
+  "grade": {"contrast": 1.04, "saturation": 1.05},
+  "audio": {"loudness_lufs": -14, "denoise": true, "music": null, "sfx": []},
+  "safe_zones": {"9x16": {"top": 0.10, "bottom": 0.20}}
+}

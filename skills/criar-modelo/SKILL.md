@@ -35,7 +35,7 @@ python3 $ROOT/engine/analyze.py REF.mp4 --out MODELO_DIR/referencia/<ref-nome> -
 - **Padrão quando `$ROOT` é um clone git do repositório** (`git -C $ROOT rev-parse` funciona), ou seja, quem mantém o plugin: `$ROOT/templates/<nome>`. Assim o modelo vai para todos que usam o plugin depois do commit/push.
 - Caso contrário (plugin instalado, só usando): `~/.editor-video/templates/<nome>`, que fica só nesta máquina e sobrevive a atualizações.
 
-**Marca**: por padrão o modelo segue a marca do Instituto (`brand.json`). Copie da referência o ritmo, a estrutura, as animações e a *forma* da tipografia (peso, tamanho, posição, caixa), mas use as cores e fontes da marca, a não ser que o usuário peça explicitamente as cores da referência. Leia também `$ROOT/templates/clinico/REGRAS.md` (regras de publicidade médica valem para todo modelo).
+**Modelos são neutros de marca.** O modelo copia da referência o ritmo, a estrutura, os layouts, as animações e a *forma* da tipografia (peso relativo, tamanho, posição, caixa alta, quantas palavras por vez), mas **nunca as cores, fontes ou logos** da referência: tudo visual passa pelos papéis da marca (`accent`, `primary`, `background`, `text`, `text_muted`, fontes `title`/`caption`/`body`/`mono`). Assim o mesmo modelo serve para qualquer cliente. Registre no REGRAS.md, como observação, como era a identidade na referência. Leia também `$ROOT/regras/<segmento>.md` quando o modelo for pensado para um segmento (ex.: saúde).
 
 Leia o `resumo.md` gerado. Ele traz ritmo (cortes/min, duração dos planos, cortes no gancho, curva por terços), punch-zooms nos cortes e zooms contínuos, cor (paleta, saturação, contraste, grade sugerido), áudio (loudness, música de fundo, pausas, efeitos nos cortes) e fala (palavras/min, texto do gancho).
 
@@ -61,7 +61,7 @@ Crie `MODELO_DIR/template.json`. Use `extends` (`"reels"` ou `"anuncio-meta"`) p
 - cor → `grade` (parta de `grade_suggestion` e ajuste olhando os frames)
 - áudio → `audio.loudness_lufs` (medido, entre −16 e −12), `sfx_on_cuts` se provável (peça um arquivo de whoosh ao usuário ou deixe documentado), música de fundo como recomendação no REGRAS.md
 - overlays sempre presentes (título de gancho, barra de progresso, logo, CTA) → `overlays` com `anchor` e placeholders `{{...}}` para o texto que muda a cada vídeo
-- cores/fontes da referência (se o modelo NÃO seguir a marca): `highlight_color`/`color` nos blocos e `props.color` nos overlays. Fonte diferente da marca: coloque o arquivo (.woff2/.ttf, de licença livre, como Google Fonts via npm `@fontsource/<fonte>`) em `brand/fonts` e cite-a no REGRAS.md. Não dá para garantir a fonte exata da referência; use a mais parecida e diga isso ao usuário.
+- cores/fontes: **não** vão para o modelo (ver acima). Para validar, renderize a prévia em **duas marcas diferentes** (`--brand`) e confira se o estilo se mantém e só a identidade muda.
 
 Escreva `MODELO_DIR/REGRAS.md` no formato dos modelos existentes (`$ROOT/templates/reels/REGRAS.md`): objetivo, cortes, gancho, legendas, zoom, motion graphics (quando usar cada um e com que props), estrutura narrativa, CTA e acabamento. **Seja específico** (tempos, frequências, tamanhos), porque é isso que guia as decisões em cada vídeo futuro. Inclua a seção "Origem" listando as referências e as medições-chave.
 

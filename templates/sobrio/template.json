@@ -1,0 +1,101 @@
+{
+  "description": "Sóbrio e elegante: título leve, um único acento por tela, cortes limpos, assinatura do profissional (se a marca tiver), CTA em tela cheia. Neutro: cores e fontes vêm da marca.",
+  "extends": "reels",
+  "formats": [
+    "9x16",
+    "4x5"
+  ],
+  "reframe": {
+    "mode": "cover"
+  },
+  "cut": {
+    "max_pause": 0.45,
+    "pad_before": 0.08,
+    "pad_after": 0.16
+  },
+  "captions": {
+    "style": "pop",
+    "reveal": "page",
+    "words_per_line": 4,
+    "max_chars": 24,
+    "position": 0.72,
+    "size": 0.06,
+    "uppercase": false,
+    "stroke": 0,
+    "shadow": true,
+    "animation": "fade",
+    "emphasis_scale": 1.0,
+    "font": "caption"
+  },
+  "zoom": {
+    "jump_cut_scale": 1.05,
+    "slow_push": null
+  },
+  "overlays": [
+    {
+      "type": "logo",
+      "anchor": "full",
+      "props": {
+        "position": "top-left",
+        "opacity": 0.75
+      }
+    },
+    {
+      "type": "title",
+      "anchor": "start",
+      "duration": 2.8,
+      "props": {
+        "text": "{{GANCHO}}",
+        "position": "top",
+        "size": 0.075,
+        "uppercase": false,
+        "stroke": 0,
+        "animation": "slide"
+      }
+    },
+    {
+      "type": "assinatura",
+      "anchor": "start",
+      "offset": 3.0,
+      "duration": 3.5,
+      "props": {
+        "position": 0.52
+      }
+    },
+    {
+      "type": "progress",
+      "anchor": "full",
+      "props": {
+        "position": "bottom",
+        "height": 4
+      }
+    },
+    {
+      "type": "cta",
+      "anchor": "end",
+      "duration": 3.5,
+      "props": {
+        "title": "{{CTA_TITULO}}",
+        "mode": "full",
+        "uppercase": false,
+        "weight": 300
+      }
+    }
+  ],
+  "grade": {
+    "contrast": 1.04,
+    "saturation": 0.95
+  },
+  "audio": {
+    "loudness_lufs": -14,
+    "denoise": true,
+    "music": null,
+    "sfx": []
+  },
+  "safe_zones": {
+    "9x16": {
+      "top": 0.12,
+      "bottom": 0.2
+    }
+  }
+}

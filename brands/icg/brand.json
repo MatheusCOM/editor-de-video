@@ -1,5 +1,5 @@
 {
-  "_comment": "Identidade visual do Instituto Clayton Guimarães (guia de marca 2026). Caminhos relativos a esta pasta. Dr. Clayton não possui RQE: manter rqe/especialidade vazios. CRM pendente.",
+  "_comment": "Identidade visual do Instituto Clayton Guimarães (guia de marca 2026). Caminhos relativos a esta pasta. Dr. Clayton não possui RQE. CRM pendente.",
   "name": "Instituto Clayton Guimarães",
   "colors": {
     "primary": "#12141A",
@@ -93,16 +93,20 @@
   "radius": 14,
   "handle": "",
   "cta_default": "Agende sua avaliação",
-  "medico": {
-    "nome": "Dr. Clayton Guimarães",
-    "crm": "",
-    "rqe": "",
-    "especialidade": ""
-  },
   "guia": {
-    "regra_do_dourado": "Um único elemento dourado preenchido por tela. Todo o resto em texto ou contorno.",
-    "fotografia": "Retratos em luz baixa, fundo escuro, sem filtro colorido. Antes/depois sempre no mesmo enquadramento.",
-    "tom_de_voz": "Direto e clínico. Frases curtas, sem promessa de número. Palavras: ajuste, leitura, acompanhamento.",
-    "espacamento": "Escala de 4: 8, 12, 16, 24, 32, 48."
+    "regra_do_acento": "Um único elemento dourado (accent) preenchido por tela: a palavra ativa da legenda OU o destaque do título OU o botão do CTA. Todo o resto em texto ou contorno. Nunca superfícies inteiras douradas.",
+    "visual": "Fundo quase-preto, tipografia leve e ampla (Sora Light nos títulos), hierarquia por espaço e contraste, não por cor. Sem emojis, setas chamativas, flash ou contorno grosso em legenda. Legendas em minúsculas.",
+    "fotografia": "Retratos em luz baixa, fundo escuro, sem filtro colorido (grade quase neutro). Antes/depois sempre no mesmo enquadramento e mesmo grade.",
+    "tom_de_voz": "Direto e clínico. Frases curtas, sem promessa de número ou resultado. Vocabulário: ajuste, leitura, acompanhamento, protocolo, avaliação.",
+    "dados": "Datas, medidas e rótulos em JetBrains Mono, caixa alta, espaçado (overlay rotulo). Sucesso #6FA88B e Atenção #C2705A só em dados clínicos.",
+    "espacamento": "Escala de 4: 8, 12, 16, 24, 32, 48.",
+    "restricoes_profissional": "O Dr. Clayton não tem RQE: nunca apresentá-lo como especialista em nenhuma área."
+  },
+  "segmento": "saude",
+  "assinatura": {
+    "nome": "Dr. Clayton Guimarães",
+    "registro_tipo": "CRM",
+    "registro": "",
+    "extra": ""
   }
 }

@@ -2,10 +2,11 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "EDL — lista de decisões de edição",
   "type": "object",
-  "required": ["version", "template", "source", "fps", "formats", "segments", "duration"],
+  "required": ["version", "template", "brand", "source", "fps", "formats", "segments", "duration"],
   "properties": {
     "version": {"const": 1},
     "template": {"type": "string"},
+    "brand": {"type": "string"},
     "source": {"type": "string"},
     "transcript": {"type": ["string", "null"]},
     "fps": {"type": "number", "minimum": 12, "maximum": 60},
