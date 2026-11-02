@@ -72,7 +72,7 @@ def affine_between(g1, g2):
 def visual_pass(path, info):
     fps = info["fps"] or 30
     prev_g, prev_h = None, None
-    diffs, hdiffs, motion, times = [], [], [], []
+    diffs, hdiffs, motion, times, bands = [], [], [], [], []
     thumbs = {}
     for t, fr in read_frames(path):
         s = small(fr)
@@ -81,7 +81,11 @@ def visual_pass(path, info):
         h = cv2.calcHist([hsv], [0, 1], None, [32, 16], [0, 180, 0, 256])
         cv2.normalize(h, h)
         if prev_g is not None:
-            diffs.append(float(np.mean(cv2.absdiff(g, prev_g))))
+            ad = cv2.absdiff(g, prev_g)
+            diffs.append(float(np.mean(ad)))
+            # diferença por faixa horizontal: pega cortes numa parte da tela quando outra parte é arte fixa
+            bh = ad.shape[0] // 3
+            bands.append([float(np.mean(ad[k * bh:(k + 1) * bh])) for k in range(3)])
             hdiffs.append(float(cv2.compareHist(prev_h, h, cv2.HISTCMP_BHATTACHARYYA)))
             motion.append(affine_between(prev_g, g))
             times.append(t)
@@ -89,6 +93,7 @@ def visual_pass(path, info):
         prev_g, prev_h = g, h
     d = np.array(diffs) if diffs else np.zeros(1)
     hd = np.array(hdiffs) if hdiffs else np.zeros(1)
+    bd = np.array(bands) if bands else np.zeros((1, 3))
 
     # corte = pico isolado de diferença (pixel OU histograma) bem acima da vizinhança
     cuts = []
@@ -101,7 +106,15 @@ def visual_pass(path, info):
         broken = mo is None or mo["inliers"] < 0.35
         pix_spike = d[i] > max(12, base * 3.0)
         hist_spike = hd[i] > 0.35 and hd[i] > np.median(hd[lo:hi]) * 2.5
-        if (pix_spike and broken) or hist_spike:
+        # corte localizado: uma faixa tem pico forte e isolado (ex.: metade de baixo com o apresentador)
+        band_spike = False
+        for k in range(bd.shape[1]):
+            col = bd[:, k]
+            nb = np.concatenate([col[lo:i], col[i + 1:hi]]) if hi - lo > 1 else col
+            bbase = float(np.median(nb)) if len(nb) else 0.0
+            if col[i] > max(10.0, bbase * 4.0) and col[i] > 2.5 * max(nb.max() if len(nb) else 0.0, 1e-6) / 2:
+                band_spike = True
+        if (pix_spike and broken) or hist_spike or band_spike:
             if not cuts or times[i] - cuts[-1]["t"] > 0.2:
                 cuts.append({"t": round(times[i], 3), "diff": round(float(d[i]), 1), "hist": round(float(hd[i]), 3)})
 
