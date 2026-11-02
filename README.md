@@ -38,6 +38,22 @@ Depois, peça ao Claude: *"roda o setup do editor de vídeo"* (ele executa `scri
 
 Modelos e marca **do usuário** ficam em `~/.editor-video/` (`templates/`, `brand/`, `components/`) e têm prioridade sobre os do plugin; atualizações do plugin não apagam essa pasta. Para distribuir um modelo para todo mundo, coloque-o em `templates/` deste repositório e publique.
 
+## Escolher referências no Instagram (por desempenho)
+
+1. No computador, com Python, instale o Instaloader e baixe **só os metadados** dos vídeos (sem os arquivos). Use uma conta secundária no `--login`:
+```bash
+pip install instaloader
+```
+```bash
+instaloader --login=CONTA --reels --no-pictures --no-videos --no-captions --post-filter="is_video" PERFIL
+```
+2. Ranqueie (ou mande a pasta `PERFIL/` para o Claude):
+```bash
+python3 engine/ranking_instagram.py PERFIL
+```
+   Gera `PERFIL/ranking/ranking.md`, com o top 30 por **desempenho relativo** (views ÷ mediana dos vídeos da mesma época), e `baixar.sh`, com os comandos para baixar só os escolhidos.
+3. Baixe só as referências escolhidas (`instaloader -- -CODIGO`) e peça: "cria um modelo a partir desses vídeos".
+
 ## Como funciona
 
 ```

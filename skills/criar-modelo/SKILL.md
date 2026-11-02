@@ -14,6 +14,9 @@ Objetivo: transformar o **estilo de edição** de uma ou mais referências num m
 - Pergunte o nome do modelo (curto, minúsculo, com hífen: `podcast-cortes`, `ugc-depoimento`) e, se não estiver claro: para que plataforma/formato ele serve e se deve seguir a **marca do usuário** ou as **cores/fontes da referência**.
 - Várias referências do mesmo estilo dão um modelo mais robusto: analise todas e consolide o que é comum.
 
+### Escolhendo as referências pelo desempenho
+Se o usuário trouxer a pasta de metadados do Instaloader (arquivos `*.json.xz`), rode `python3 $ROOT/engine/ranking_instagram.py PASTA --top 30` e mostre o `ranking.md`. Ajude a escolher: os de maior **desempenho** (1,0 = normal para a época) são as melhores referências. Agrupe por estilo (duração, tema pela legenda) e peça para baixar só os escolhidos (`baixar.sh`). Os vídeos que mais performaram devem pesar mais nas regras do modelo.
+
 ## 2. Dissecar (medições automáticas)
 ```bash
 python3 $ROOT/engine/analyze.py REF.mp4 --out MODELO_DIR/referencia/<ref-nome> --transcribe
