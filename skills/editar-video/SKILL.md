@@ -16,6 +16,8 @@ Você é o editor. Os scripts fazem o trabalho mecânico; **você toma as decis�
 - Liste os modelos: `python3 $ROOT/engine/templates.py`. Se o usuário não disse qual modelo usar, mostre a lista e pergunte. Os modelos são neutros: a mesma edição muda de cara conforme a marca.
 - Pasta de trabalho: crie `./edicoes/<nome-do-video>/` no diretório atual (ou onde o usuário pedir). Tudo do job fica ali.
 
+**Vídeo já editado** ("só adiciona motion"): use o modelo `motion-overlay` e leia o REGRAS.md dele. Antes, rode `analyze.py --transcribe` e olhe as folhas para achar rosto, legenda gravada e zonas livres.
+
 ## 1. Medir e transcrever
 ```bash
 python3 $ROOT/engine/probe.py BRUTO.mp4
@@ -62,11 +64,12 @@ Placeholders `{{...}}` nos overlays do modelo (ex.: `{{GANCHO}}`, `{{CTA_TITULO}
 - `logo`: `position` (`top-right`…), `size`, `opacity`
 - `progress`: `position` (`top`/`bottom`), `height`, `color`
 - `flash`: `color`, `intensity` (transição branca de ~0.15s num corte)
-- `rotulo`: `text`, `position`, `align`, `size`, `color` (texto mono pequeno em caixa alta: datas, medidas, "PROTOCOLO · SEMANA 6")
+- `rotulo`: `text`, `position`, `align`, `size`, `color`, `bg` (`false` tira o fundo escuro) (texto mono pequeno em caixa alta: datas, medidas, "PROTOCOLO · SEMANA 6")
 - `assinatura`: nome + registro profissional da marca (`brand.json → assinatura`: `nome`, `registro_tipo`, `registro`, `extra`, `cargo`; props podem sobrescrever), `position`. O draft remove esse overlay se a marca não tiver assinatura.
 - `capa`: faixa fixa no topo (use com `reframe.region`): `titulo` (com `*destaques*`), `subtitulo`, `imagem` (fundo), `altura` (0.42), `estilo_destaque` (`caixa`/`cor`), `uppercase`, `alinhamento`
 - `cena`: fundo da marca em tela cheia (esconde a pessoa): `estilo` (`gradiente`/`solido`)
 - `item_numerado`: `numero`, `titulo`, `subtitulo` (mono), `icone` (imagem), `position`, `size`
+- `chips`: etiquetas que entram uma a uma, no tempo da fala: `itens` [{`texto`, `em` (s desde o início do overlay)}], `titulo` (rótulo acima), `position`, `riscar_em` (s; risca todas, para "derrubar mitos"), `estilo` (`contorno`/`solido`), `destaque` (índice com fundo de acento)
 - `cartao`: `src` (imagem/vídeo/print) **ou** `titulo` + `texto` + `rotulo_topo`; `posicao` (`topo`/`centro`/0–1), `largura`, `proporcao`, `limite`, `rotulo` (chip), `rotacao`, `ajuste`
 - Componentes customizados de modelos criados a partir de referência: veja o `REGRAS.md` do modelo.
 

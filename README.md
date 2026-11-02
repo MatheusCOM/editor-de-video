@@ -43,6 +43,7 @@ Antes de editar, o Claude **pergunta para qual marca é o vídeo**. Se for uma m
 
 - **capa-fala**: capa fixa no topo (título tipo thumbnail) + pessoa falando embaixo; jump cuts discretos, legenda pequena. Engenharia reversa de um reel do Dr. Clayton.
 - **lista-motion**: "N coisas que…" com itens numerados, cartões animados (prints, imagens, texto) e cenas de tela cheia; cortes rápidos com punch-in. Engenharia reversa de um reel de George Vitko.
+- **motion-overlay**: só motion por cima de um vídeo **já editado** (sem cortar, sem nova legenda): títulos, etiquetas sincronizadas com a fala, rótulos e assinatura nas zonas livres da tela.
 - **sobrio**: elegante e discreto, um único acento por tela, assinatura e CTA em tela cheia.
 - **reels**: 9:16, cortes secos, legenda palavra por palavra, zoom de jump cut, título-gancho, barra de progresso.
 - **anuncio-meta**: herda reels; gancho em 3s, legenda em caixa, CTA final, saídas 9:16 + 4:5 + 1:1, zonas seguras do Meta.

@@ -271,3 +271,102 @@ export const Cartao: React.FC<OverlayProps> = ({ props, brand, safe, duration })
     </AbsoluteFill>
   );
 };
+
+// ---------------------------------------------------------------- chips (etiquetas que entram uma a uma, podem ser riscadas)
+// props: itens: [{texto, em}] (em = segundos desde o início do overlay), titulo (rótulo mono acima),
+//        position (y 0..1, padrão 0.8), riscar_em (s, risca todos), estilo "contorno" | "solido",
+//        destaque (índice do item com fundo de acento — respeite a regra de 1 acento por tela)
+export const Chips: React.FC<OverlayProps> = ({ props, brand, safe, duration }) => {
+  const frame = useCurrentFrame();
+  const { fps, width: W, height: H } = useVideoConfig();
+  const k = W / 1080;
+  const c = brand.colors;
+  const itens: { texto: string; em?: number }[] = (props.itens || []).map((it: any, i: number) =>
+    typeof it === "string" ? { texto: it, em: i * 0.5 } : it,
+  );
+  const out = exitProgress(frame, fps, duration, 0.25);
+  const riscar = props.riscar_em !== undefined ? interpolate(frame, [props.riscar_em * fps, (props.riscar_em + 0.35) * fps], [0, 1], { ...clamp, easing: (x) => 1 - Math.pow(1 - x, 3) }) : 0;
+  const fs = (props.size ?? 0.04) * W;
+  const tituloOp = interpolate(frame, [0, 0.3 * fps], [0, 1], clamp);
+  return (
+    <AbsoluteFill style={{ opacity: 1 - out }}>
+      <div
+        style={{
+          position: "absolute",
+          left: W * safe.left,
+          right: W * safe.right,
+          top: H * (props.position ?? 0.8),
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 16 * k,
+        }}
+      >
+        {props.titulo ? (
+          <div
+            style={{
+              ...fontCss(brand, "mono"),
+              fontSize: 0.024 * W,
+              color: c.text,
+              opacity: tituloOp,
+              textTransform: "uppercase",
+              background: `${c.background || "#000"}b3`,
+              padding: `${6 * k}px ${14 * k}px`,
+              borderRadius: 8 * k,
+            }}
+          >
+            {props.titulo}
+          </div>
+        ) : null}
+        <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 14 * k }}>
+          {itens.map((it, i) => {
+            const t0 = (it.em ?? i * 0.5) * fps;
+            const p = spring({ frame: frame - t0, fps, config: { damping: 13, stiffness: 190, mass: 0.6 } });
+            if (frame < t0) return null;
+            const blur = interpolate(frame - t0, [0, 0.25 * fps], [10 * k, 0], clamp);
+            const solid = props.estilo === "solido" || props.destaque === i;
+            const accentFill = props.destaque === i;
+            return (
+              <div
+                key={i}
+                style={{
+                  position: "relative",
+                  ...fontCss(brand, "body"),
+                  fontWeight: 700,
+                  fontSize: fs,
+                  lineHeight: 1,
+                  padding: `${14 * k}px ${26 * k}px`,
+                  borderRadius: 999,
+                  color: accentFill ? c.text_dark || "#111" : c.text,
+                  background: accentFill ? c.accent : solid ? `${c.primary}e6` : `${c.background || "#000"}b8`,
+                  border: `${Math.max(1.5, 2.5 * k)}px solid ${accentFill ? c.accent : c.accent + "cc"}`,
+                  backdropFilter: "blur(6px)",
+                  transform: `translateY(${(1 - p) * 26 * k}px) scale(${0.8 + 0.2 * p})`,
+                  filter: `blur(${blur}px)`,
+                  opacity: Math.min(1, p * 1.3) * (1 - riscar * 0.3),
+                  boxShadow: "0 10px 30px rgba(0,0,0,0.35)",
+                }}
+              >
+                {it.texto}
+                {riscar > 0 ? (
+                  <div
+                    style={{
+                      position: "absolute",
+                      left: 14 * k,
+                      top: "50%",
+                      height: Math.max(3, 5 * k),
+                      width: `calc((100% - ${28 * k}px) * ${riscar})`,
+                      background: c.accent,
+                      borderRadius: 4,
+                      transform: "translateY(-50%) rotate(-4deg)",
+                    }}
+                  />
+                ) : null}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </AbsoluteFill>
+  );
+};

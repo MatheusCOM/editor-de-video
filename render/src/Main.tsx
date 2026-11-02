@@ -20,7 +20,7 @@ import {
   TextPop,
   Title,
 } from "./components/overlays";
-import { Capa, Cartao, Cena, ItemNumerado } from "./components/overlays/motion";
+import { Capa, Cartao, Cena, Chips, ItemNumerado } from "./components/overlays/motion";
 import { VideoLayer } from "./components/VideoLayer";
 import { loadBrandFonts } from "./lib/fonts";
 import type { MainProps, Overlay } from "./types";
@@ -43,11 +43,12 @@ const registry: Record<string, React.FC<OverlayProps>> = {
   cena: Cena,
   item_numerado: ItemNumerado,
   cartao: Cartao,
+  chips: Chips,
   ...customRegistry,
 };
 
 // ordem de empilhamento: o que vem depois fica por cima
-const LAYER: Record<string, number> = { cena: 10, capa: 15, cartao: 40, item_numerado: 45, flash: 90, cta: 80, progress: 70, logo: 60 };
+const LAYER: Record<string, number> = { cena: 10, capa: 15, cartao: 40, item_numerado: 45, chips: 46, flash: 90, cta: 80, progress: 70, logo: 60 };
 
 export const Main: React.FC<MainProps> = (p) => {
   loadBrandFonts(p.brand);

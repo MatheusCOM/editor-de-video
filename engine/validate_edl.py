@@ -13,7 +13,7 @@ from common import SCHEMAS_DIR, load_brand, load_json, load_template
 
 KNOWN_OVERLAYS = {"title", "text_pop", "lower_third", "cta", "emoji", "progress", "logo", "flash",
                   "image", "arrow", "checklist", "counter", "custom", "rotulo", "assinatura",
-                  "capa", "cena", "item_numerado", "cartao"}
+                  "capa", "cena", "item_numerado", "cartao", "chips"}
 
 
 def resolve(p, base):

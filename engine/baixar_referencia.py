@@ -119,7 +119,19 @@ def main():
             opts["cookiefile"] = a.cookies
         try:
             with yt_dlp.YoutubeDL(opts) as ydl:
-                info = ydl.extract_info(url, download=False)
+                # o Instagram limita acessos de forma intermitente: tenta de novo com espera crescente
+                for tentativa, espera in enumerate([0, 8, 20, 40]):
+                    if espera:
+                        log(f"[{i + 1}/{len(links)}] limite do site, nova tentativa em {espera}s…")
+                        time.sleep(espera)
+                    try:
+                        info = ydl.extract_info(url, download=False)
+                        break
+                    except Exception as ex:  # noqa
+                        msg = str(ex).lower()
+                        temporario = "rate-limit" in msg or "login required" in msg or "429" in msg
+                        if not temporario or tentativa == 3:
+                            raise
                 if info.get("_type") == "playlist":
                     entries = [e for e in (info.get("entries") or []) if e]
                     if not entries:

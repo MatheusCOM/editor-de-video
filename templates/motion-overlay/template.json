@@ -1,0 +1,12 @@
+{
+  "description": "Só motion: adiciona motion graphics por cima de um vídeo JÁ editado, sem cortar, sem nova legenda e sem mexer em cor/áudio. Elementos sincronizados com a fala, nas zonas livres da tela.",
+  "extends": "reels",
+  "formats": ["9x16"],
+  "reframe": {"mode": "cover"},
+  "cut": {"mode": "none"},
+  "captions": {"enabled": false},
+  "zoom": {"jump_cut_scale": null, "slow_push": null},
+  "overlays": [],
+  "grade": {},
+  "audio": {"loudness_lufs": -14, "denoise": false, "music": null, "sfx": []}
+}

@@ -516,7 +516,19 @@ export const Rotulo: React.FC<OverlayProps> = ({ props, brand, safe, duration })
           opacity: op,
         }}
       >
-        {props.text}
+        {props.bg === false ? (
+          props.text
+        ) : (
+          <span
+            style={{
+              background: `${brand.colors.background || "#000"}b3`,
+              padding: `${6 * (W / 1080)}px ${14 * (W / 1080)}px`,
+              borderRadius: 8 * (W / 1080),
+            }}
+          >
+            {props.text}
+          </span>
+        )}
       </div>
     </AbsoluteFill>
   );
