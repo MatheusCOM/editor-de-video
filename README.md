@@ -38,6 +38,16 @@ Depois, peça ao Claude: *"roda o setup do editor de vídeo"* (ele executa `scri
 
 Modelos e marca **do usuário** ficam em `~/.editor-video/` (`templates/`, `brand/`, `components/`) e têm prioridade sobre os do plugin; atualizações do plugin não apagam essa pasta. Para distribuir um modelo para todo mundo, coloque-o em `templates/` deste repositório e publique.
 
+## Referências por link
+
+Cole os links no chat ("cria um modelo a partir desses vídeos: …") e o Claude baixa, analisa e monta o modelo. Funciona com Instagram, TikTok, YouTube, Facebook e Kwai, via [yt-dlp](https://github.com/yt-dlp/yt-dlp). À mão:
+```bash
+python3 engine/baixar_referencia.py LINK1 LINK2 --out referencias/lote1
+```
+- O ambiente precisa alcançar os sites. Na nuvem do Claude, libere em Network access: `*.instagram.com`, `*.cdninstagram.com`, `*.fbcdn.net`, `*.tiktok.com`, `*.tiktokcdn.com`, `*.tiktokv.com`, `*.youtube.com`, `*.googlevideo.com`, `*.ytimg.com`.
+- O Instagram às vezes pede login: exporte `cookies.txt` do navegador (extensão "Get cookies.txt LOCALLY") e use `--cookies cookies.txt`. Nunca use senha.
+- Vídeos de terceiros são usados só para estudar o estilo: ficam locais e não são publicados.
+
 ## Escolher referências no Instagram (por desempenho)
 
 1. No computador, com Python, instale o Instaloader e baixe **só os metadados** de todos os posts (vídeos, imagens e carrosséis, sem os arquivos). Use uma conta secundária no `--login`:

@@ -7,10 +7,20 @@ description: Cria um novo modelo de edição de vídeo por engenharia reversa de
 
 `ROOT` = a pasta do plugin, dois níveis acima deste SKILL.md (`<diretório-base-da-skill>/../..`).
 
+Fluxo ideal: o usuário cola links → você baixa, analisa, agrupa por estilo e só pede confirmação dos grupos e do nome de cada modelo.
+
 Objetivo: transformar o **estilo de edição** de uma ou mais referências num modelo que a skill `editar-video` aplica em qualquer bruto. Copiamos o estilo (ritmo, tipografia, animações, estrutura), **nunca o conteúdo nem os assets** da referência (música, imagens, logos de terceiros).
 
 ## 1. Receber as referências
-- Peça o arquivo do vídeo (mp4/mov). Links de Instagram/TikTok não são baixados aqui: peça para o usuário baixar e enviar o arquivo.
+- **Links** (Instagram, TikTok, YouTube, Facebook, Kwai…): baixe todos de uma vez:
+  ```bash
+  python3 $ROOT/engine/baixar_referencia.py LINK1 LINK2 ... --out REFS_DIR
+  ```
+  (ou `--lista links.txt`). `REFS_DIR` = `./referencias/<nome-do-lote>/`. O script pula repetidos, espera entre downloads e no fim lista o que baixou e o que falhou, com o motivo.
+  - Falha "pediu login" (comum no Instagram): peça ao usuário um `cookies.txt` exportado do navegador logado (extensão "Get cookies.txt LOCALLY") e rode de novo com `--cookies`. **Nunca peça senha.**
+  - Falha "rede bloqueada": o ambiente não alcança o site. Leia a documentação do ambiente sobre rede e passe ao usuário os domínios a liberar (`*.instagram.com`, `*.cdninstagram.com`, `*.fbcdn.net`, `*.tiktok.com`, `*.tiktokcdn.com`, `*.tiktokv.com`, `*.youtube.com`, `*.googlevideo.com`, `*.ytimg.com`). Em servidores de nuvem o Instagram pode recusar mesmo assim; no computador do usuário funciona melhor.
+  - Com vários links, rode `python3 $ROOT/engine/ranking_instagram.py REFS_DIR` para ver quais performaram melhor (cada perfil é comparado só com ele mesmo) e dê mais peso a eles.
+- **Arquivos** (mp4/mov) enviados direto também servem.
 - Pergunte o nome do modelo (curto, minúsculo, com hífen: `podcast-cortes`, `ugc-depoimento`) e, se não estiver claro: para que plataforma/formato ele serve e se deve seguir a **marca do usuário** ou as **cores/fontes da referência**.
 - Várias referências do mesmo estilo dão um modelo mais robusto: analise todas e consolide o que é comum.
 

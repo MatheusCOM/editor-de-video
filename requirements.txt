@@ -2,3 +2,4 @@ faster-whisper>=1.1,<2
 opencv-python-headless>=4.9,<5
 numpy>=1.26
 jsonschema>=4.20
+yt-dlp>=2025.1

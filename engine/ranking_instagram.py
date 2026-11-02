@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Ranqueia os posts do Instagram (vídeos, imagens e carrosséis) a partir dos metadados do Instaloader.
+"""Ranqueia posts por desempenho a partir dos metadados do Instaloader (Instagram: vídeos, imagens,
+carrosséis) e/ou do baixar_referencia.py (yt-dlp: Instagram, TikTok, YouTube...).
 
 Uso:
   python3 engine/ranking_instagram.py PASTA_DO_PERFIL [-o saida/] [--top 30]
@@ -45,6 +46,32 @@ def g(node, *keys):
             return None
         cur = cur[k]
     return cur
+
+
+def parse_ytdlp(m):
+    """Metadados salvos por baixar_referencia.py (yt-dlp): qualquer plataforma."""
+    ts = m.get("timestamp")
+    if not ts and m.get("upload_date"):
+        ts = datetime.strptime(m["upload_date"], "%Y%m%d").replace(tzinfo=timezone.utc).timestamp()
+    date = datetime.fromtimestamp(ts, tz=timezone.utc) if ts else None
+    likes, comments = int(m.get("like_count") or 0), int(m.get("comment_count") or 0)
+    return {
+        "codigo": str(m["id"]),
+        "tipo": "video",
+        "plataforma": (m.get("extractor_key") or "").lower(),
+        "autor": m.get("uploader_id") or m.get("uploader") or m.get("channel") or "",
+        "arquivo": m.get("arquivo") or "",
+        "url": m.get("webpage_url") or "",
+        "data": date.strftime("%Y-%m-%d") if date else "",
+        "_ts": ts or 0,
+        "duracao_s": round(m.get("duration") or 0, 1),
+        "views": int(m["view_count"]) if m.get("view_count") else None,
+        "curtidas": likes,
+        "comentarios": comments,
+        "interacoes": likes + comments,
+        "legenda": ((m.get("description") or m.get("title") or "").replace("\n", " "))[:140],
+        "slides": None,
+    }
 
 
 def parse(node):
@@ -96,13 +123,16 @@ def main():
 
     posts, seen = [], set()
     for f in sorted(list(pasta.rglob("*.json.xz")) + list(pasta.rglob("*.json"))):
-        if "ranking" in f.parts:
+        if "ranking" in f.parts or f.name.startswith("_"):
             continue
         try:
             data = load(f)
         except Exception:
             continue
-        p = parse(data.get("node", data))
+        if isinstance(data, dict) and "extractor_key" in data and "id" in data:
+            p = parse_ytdlp(data)
+        else:
+            p = parse(data.get("node", data))
         if p and p["codigo"] not in seen:
             seen.add(p["codigo"])
             posts.append(p)
@@ -111,10 +141,14 @@ def main():
 
     rotulos = {"video": "Vídeos", "imagem": "Imagens", "carrossel": "Carrosséis"}
     ranked_all, top_all, L = [], [], [f"# Ranking de posts — {pasta.name}", "",
-                                      "Desempenho = métrica ÷ mediana dos ~10 posts do mesmo tipo mais próximos no tempo "
-                                      "(1,0 = normal para a época). Cada tipo é comparado só com ele mesmo."]
-    for tipo in ("video", "carrossel", "imagem"):
-        grupo = sorted([p for p in posts if p["tipo"] == tipo], key=lambda p: p["_ts"])
+                                      "Desempenho = métrica ÷ mediana dos ~10 posts do mesmo tipo e do mesmo perfil mais próximos no tempo "
+                                      "(1,0 = normal para aquele perfil na época). Cada perfil e tipo é comparado só com ele mesmo."]
+    for p in posts:
+        p.setdefault("autor", pasta.name)
+    autores = sorted({p["autor"] for p in posts})
+    combos = [(au, tipo) for au in autores for tipo in ("video", "carrossel", "imagem")]
+    for autor, tipo in combos:
+        grupo = sorted([p for p in posts if p["tipo"] == tipo and p["autor"] == autor], key=lambda p: p["_ts"])
         if not grupo:
             continue
         has_views = tipo == "video" and sum(1 for p in grupo if p["views"]) >= len(grupo) * 0.5
@@ -129,7 +163,8 @@ def main():
         ranked_all += ranked
         top = ranked[: a.top]
         top_all += top
-        L += ["", f"## {rotulos[tipo]} — {len(grupo)} posts · desempenho por **{key}**", ""]
+        quem = f" · @{autor}" if len(autores) > 1 else ""
+        L += ["", f"## {rotulos[tipo]}{quem} — {len(grupo)} posts · desempenho por **{key}**", ""]
         if tipo == "video":
             L += ["| # | desempenho | views | curtidas | coment. | eng. % | duração | data | legenda | link |",
                   "|---|---|---|---|---|---|---|---|---|---|"]
@@ -144,7 +179,7 @@ def main():
                 L.append(f"| {i} | {p['desempenho'] or '–'} | {p['curtidas']} | {p['comentarios']} | {sl}"
                          f"{p['data']} | {p['legenda'][:60]} | [abrir]({p['url']}) |")
 
-    cols = ["tipo", "codigo", "data", "metrica", "desempenho", "views", "curtidas", "comentarios", "interacoes",
+    cols = ["autor", "plataforma", "arquivo", "tipo", "codigo", "data", "metrica", "desempenho", "views", "curtidas", "comentarios", "interacoes",
             "engajamento_%", "duracao_s", "slides", "url", "legenda"]
     with open(out / "ranking.csv", "w", newline="", encoding="utf-8") as fh:
         w = csv.DictWriter(fh, fieldnames=cols, extrasaction="ignore")

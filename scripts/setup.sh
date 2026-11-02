@@ -21,7 +21,7 @@ command -v node >/dev/null || fail "Node.js 18+ não encontrado (https://nodejs.
 node -e 'process.exit(parseInt(process.versions.node) >= 18 ? 0 : 1)' || fail "Node.js 18+ necessário"
 ok "node $(node --version)"
 
-if "$PY" -c 'import faster_whisper, cv2, numpy, jsonschema; assert hasattr(cv2, "CascadeClassifier")' 2>/dev/null; then
+if "$PY" -c 'import faster_whisper, cv2, numpy, jsonschema, yt_dlp; assert hasattr(cv2, "CascadeClassifier")' 2>/dev/null; then
   ok "pacotes Python já instalados"
 else
   echo "  instalando pacotes Python..."
