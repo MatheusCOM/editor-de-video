@@ -333,15 +333,16 @@ export const Balanca: React.FC<OverlayProps> = ({ props, brand, duration }) => {
         </div>
       ) : null}
       <svg width={W} height={H} style={{ position: "absolute", inset: 0, overflow: "visible" }}>
-        <line x1={px} y1={py} x2={px} y2={py + 0.13 * W} stroke={ac} strokeWidth={6 * k} strokeLinecap="round" opacity={build} />
+        <line x1={px} y1={py} x2={px} y2={py + 0.13 * W} stroke={ac} strokeWidth={9 * k} strokeLinecap="round" opacity={build} />
         <circle cx={px} cy={py} r={9 * k * build} fill={ac} />
         <line
+          style={{ filter: "drop-shadow(0 3px 6px rgba(0,0,0,0.55))" }}
           x1={px - Math.cos(rad) * arm * build}
           y1={py - Math.sin(rad) * arm * build}
           x2={px + Math.cos(rad) * arm * build}
           y2={py + Math.sin(rad) * arm * build}
           stroke={ac}
-          strokeWidth={6 * k}
+          strokeWidth={9 * k}
           strokeLinecap="round"
         />
         {(([-1, 1] as const)).map((s) => {
@@ -493,7 +494,10 @@ export const TextoFundo: React.FC<OverlayProps> = ({ props, brand, duration }) =
   const out = exitProgress(frame, fps, duration, 0.3);
   const p = spring({ frame, fps, config: { damping: 15, stiffness: 120, mass: 0.8 } });
   const ent = props.entrada || "subir";
-  const size = (props.size ?? 0.26) * W;
+  // ajusta ao espaço: a palavra inteira cabe em ~92% da largura (estimativa de largura média do glifo)
+  const txt = String(props.texto ?? "");
+  const maxLen = Math.max(...txt.split("\n").map((l) => l.length), 1);
+  const size = Math.min((props.size ?? 0.26) * W, (W * 0.92) / (maxLen * (props.largura_glifo ?? 0.72)));
   const tr =
     ent === "escala" ? `scale(${0.6 + 0.4 * p})` : ent === "revelar" ? "none" : `translateY(${(1 - p) * size * 0.6}px)`;
   const clip = ent === "revelar" ? `inset(0 ${100 - 100 * interpolate(frame, [0, 0.6 * fps], [0, 1], clamp)}% 0 0)` : "none";
@@ -518,7 +522,7 @@ export const TextoFundo: React.FC<OverlayProps> = ({ props, brand, duration }) =
           clipPath: clip,
         }}
       >
-        {props.texto}
+        {txt}
       </div>
     </AbsoluteFill>
   );
