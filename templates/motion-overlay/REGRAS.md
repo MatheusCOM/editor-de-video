@@ -9,6 +9,9 @@ Aplique sempre o `guia` da marca e as regras do segmento.
 2. Defina as **zonas livres** (ex.: topo 3–12%, base 78–92%). Motion só entra nelas. Nunca cubra rosto, boca nem legenda gravada.
 3. Se o vídeo tiver legenda gravada, deixe `captions.enabled: false`. Se não tiver, ligue a legenda do modelo (`captions.enabled: true` + estilo).
 
+## Princípio: representar, não repetir
+O primeiro teste deste modelo foi reprovado porque só repetia em texto o que já estava sendo dito. **Escreva o roteiro visual primeiro** (skill editar-video, passo 3b) e use o vocabulário visual: `texto_fundo` (palavra atrás da pessoa), `icone` + `marcador` (objeto e o gesto de riscar/circular), `diagrama` (vários fatores → um centro), `balanca` (comparação/virada), `grafico` (dados), `cena` curta em tela cheia para explicações. `chips`/`title` só como apoio, com 1–3 palavras.
+
 ## O que adicionar (ancorado na fala, tempo de saída = tempo do vídeo)
 - **Tese/gancho** (0–3s): `title` leve no topo ou `rotulo`.
 - **Listas faladas** (estereótipos, fatores, passos): `chips`, com cada item entrando na palavra exata (`em` = segundos desde o início do overlay). Para "derrubar mitos", use `riscar_em` no momento da virada ("só que…", "mas…").

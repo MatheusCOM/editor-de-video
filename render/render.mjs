@@ -27,6 +27,11 @@ function findChrome() {
 
 const log = (...a) => console.error("[render]", ...a);
 
+// ícones (gerado do lucide-static na primeira vez)
+if (!fs.existsSync(path.join(here, "src", "lib", "icons.generated.json"))) {
+  await import(path.join(here, "gen-icons.mjs"));
+}
+
 const serveUrl = await bundle({
   entryPoint: path.join(here, "src", "index.ts"),
   publicDir: job.publicDir,

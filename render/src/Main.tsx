@@ -21,6 +21,7 @@ import {
   Title,
 } from "./components/overlays";
 import { Capa, Cartao, Cena, Chips, ItemNumerado } from "./components/overlays/motion";
+import { Balanca, Diagrama, Grafico, Icone, Marcador, TextoFundo } from "./components/overlays/visual";
 import { VideoLayer } from "./components/VideoLayer";
 import { loadBrandFonts } from "./lib/fonts";
 import type { MainProps, Overlay } from "./types";
@@ -44,11 +45,17 @@ const registry: Record<string, React.FC<OverlayProps>> = {
   item_numerado: ItemNumerado,
   cartao: Cartao,
   chips: Chips,
+  icone: Icone,
+  diagrama: Diagrama,
+  balanca: Balanca,
+  grafico: Grafico,
+  marcador: Marcador,
+  texto_fundo: TextoFundo,
   ...customRegistry,
 };
 
 // ordem de empilhamento: o que vem depois fica por cima
-const LAYER: Record<string, number> = { cena: 10, capa: 15, cartao: 40, item_numerado: 45, chips: 46, flash: 90, cta: 80, progress: 70, logo: 60 };
+const LAYER: Record<string, number> = { cena: 10, capa: 15, cartao: 40, item_numerado: 45, chips: 46, texto_fundo: 5, flash: 90, cta: 80, progress: 70, logo: 60 };
 
 export const Main: React.FC<MainProps> = (p) => {
   loadBrandFonts(p.brand);
@@ -92,7 +99,9 @@ export const Main: React.FC<MainProps> = (p) => {
           <BRollClip b={b} brand={brand} />
         </Sequence>
       ))}
-      {overlays.filter((o) => (LAYER[o.type] ?? 50) < 60).map(renderOverlay)}
+      {overlays.filter((o) => (LAYER[o.type] ?? 50) <= 5).map(renderOverlay)}
+      {p.pessoa && overlays.some((o) => o.type === "texto_fundo") ? <VideoLayer p={p} pessoa={p.pessoa} /> : null}
+      {overlays.filter((o) => (LAYER[o.type] ?? 50) > 5 && (LAYER[o.type] ?? 50) < 60).map(renderOverlay)}
       {edl.captions?.enabled !== false ? (
         <Sequence durationInFrames={ctaFull ? Math.max(1, f(ctaFull.start)) : undefined} layout="none">
           <Captions cs={edl.captions} brand={brand} safe={safe} />

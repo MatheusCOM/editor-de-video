@@ -39,6 +39,15 @@ else
   ok "Remotion instalado"
 fi
 
+[ -f "$ROOT/render/src/lib/icons.generated.json" ] || (cd "$ROOT/render" && node gen-icons.mjs)
+ok "ícones gerados"
+
+if "$PY" -c 'import ai_edge_litert' 2>/dev/null; then ok "segmentação de pessoa (LiteRT)"; else
+  "$PY" -m pip install -q ai-edge-litert 2>/dev/null || "$PY" -m pip install -q --user ai-edge-litert 2>/dev/null \
+    || "$PY" -m pip install -q --break-system-packages ai-edge-litert 2>/dev/null \
+    && ok "segmentação de pessoa (LiteRT)" || warn "ai-edge-litert indisponível: efeito 'texto atrás da pessoa' desativado"
+fi
+
 mkdir -p "$HOME/.editor-video/templates" "$HOME/.editor-video/components"
 ok "pasta de dados: $HOME/.editor-video"
 

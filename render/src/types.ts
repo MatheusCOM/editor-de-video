@@ -100,6 +100,7 @@ export type MainProps = {
   width: number;
   height: number;
   video: string;
+  pessoa?: string; // vídeo da pessoa recortada (webm com alfa), para texto_fundo
   sourceSize: { width: number; height: number };
   safe: Safe;
 };

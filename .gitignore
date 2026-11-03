@@ -5,3 +5,4 @@ edicoes/
 build/
 render/src/components/custom/user/*.tsx
 .DS_Store
+render/src/lib/icons.generated.json

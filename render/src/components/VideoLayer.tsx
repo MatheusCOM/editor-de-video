@@ -61,7 +61,7 @@ function containBox(W: number, H: number, w: number, h: number, zoom: number, yC
   return { left: (W - dw) / 2, top: Math.max(0, Math.min(H - dh, H * yCenter - dh / 2)), width: dw, height: dh };
 }
 
-export const VideoLayer: React.FC<{ p: MainProps }> = ({ p }) => {
+export const VideoLayer: React.FC<{ p: MainProps; pessoa?: string }> = ({ p, pessoa }) => {
   const region = p.edl.reframe?.region;
   if (region) {
     // vídeo só numa faixa vertical da tela (ex.: capa em cima, fala embaixo)
@@ -69,18 +69,18 @@ export const VideoLayer: React.FC<{ p: MainProps }> = ({ p }) => {
     const top = Math.round(H * (region.top ?? 0));
     const h = Math.round(H * ((region.bottom ?? 1) - (region.top ?? 0)));
     return (
-      <AbsoluteFill style={{ backgroundColor: p.edl.reframe?.background || "black" }}>
+      <AbsoluteFill style={{ backgroundColor: pessoa ? "transparent" : p.edl.reframe?.background || "black" }}>
         <div style={{ position: "absolute", left: 0, right: 0, top, height: h, overflow: "hidden" }}>
-          <VideoBox p={p} H={h} />
+          <VideoBox p={p} H={h} pessoa={pessoa} />
         </div>
       </AbsoluteFill>
     );
   }
   const { height: H } = useVideoConfig();
-  return <VideoBox p={p} H={H} />;
+  return <VideoBox p={p} H={H} pessoa={pessoa} />;
 };
 
-const VideoBox: React.FC<{ p: MainProps; H: number }> = ({ p, H }) => {
+const VideoBox: React.FC<{ p: MainProps; H: number; pessoa?: string }> = ({ p, H, pessoa }) => {
   const frame = useCurrentFrame();
   const { fps, width: W } = useVideoConfig();
   const t = frame / fps;
@@ -90,7 +90,8 @@ const VideoBox: React.FC<{ p: MainProps; H: number }> = ({ p, H }) => {
   const fx = z.fx ?? seg.focus?.x ?? 0.5;
   const fy = z.fy ?? seg.focus?.y ?? 0.4;
   const mode = edl.reframe?.mode || "cover";
-  const src = staticFile(p.video);
+  const src = staticFile(pessoa || p.video);
+  const transp = !!pessoa;
   const srcAspect = sourceSize.width / sourceSize.height;
   const dstAspect = W / H;
   // se o bruto já tem praticamente o mesmo formato, "blur" vira "cover"
@@ -99,23 +100,23 @@ const VideoBox: React.FC<{ p: MainProps; H: number }> = ({ p, H }) => {
   if (effective === "cover") {
     const box = coverBox(W, H, sourceSize.width, sourceSize.height, z.scale, fx, fy, 0.42);
     return (
-      <div style={{ position: "absolute", inset: 0, backgroundColor: "black", overflow: "hidden" }}>
-        <OffthreadVideo src={src} muted style={{ position: "absolute", ...box }} />
+      <div style={{ position: "absolute", inset: 0, backgroundColor: transp ? "transparent" : "black", overflow: "hidden" }}>
+        <OffthreadVideo src={src} muted transparent={transp} style={{ position: "absolute", ...box }} />
       </div>
     );
   }
   const fg = containBox(W, H, sourceSize.width, sourceSize.height, z.scale, 0.5);
   const bg = coverBox(W, H, sourceSize.width, sourceSize.height, 1.15, fx, fy, 0.5);
   return (
-    <div style={{ position: "absolute", inset: 0, backgroundColor: edl.reframe?.background || "black", overflow: "hidden" }}>
-      {effective === "blur" ? (
+    <div style={{ position: "absolute", inset: 0, backgroundColor: transp ? "transparent" : edl.reframe?.background || "black", overflow: "hidden" }}>
+      {effective === "blur" && !transp ? (
         <OffthreadVideo
           src={src}
           muted
           style={{ position: "absolute", ...bg, filter: "blur(38px) brightness(0.6) saturate(1.2)" }}
         />
       ) : null}
-      <OffthreadVideo src={src} muted style={{ position: "absolute", ...fg }} />
+      <OffthreadVideo src={src} muted transparent={transp} style={{ position: "absolute", ...fg }} />
     </div>
   );
 };

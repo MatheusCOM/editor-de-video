@@ -70,10 +70,23 @@ Placeholders `{{...}}` nos overlays do modelo (ex.: `{{GANCHO}}`, `{{CTA_TITULO}
 - `cena`: fundo da marca em tela cheia (esconde a pessoa): `estilo` (`gradiente`/`solido`)
 - `item_numerado`: `numero`, `titulo`, `subtitulo` (mono), `icone` (imagem), `position`, `size`
 - `chips`: etiquetas que entram uma a uma, no tempo da fala: `itens` [{`texto`, `em` (s desde o início do overlay)}], `titulo` (rótulo acima), `position`, `riscar_em` (s; risca todas, para "derrubar mitos"), `estilo` (`contorno`/`solido`), `destaque` (índice com fundo de acento)
+- `icone`: ícone desenhado por traço. `nome` (Lucide, ~2.300: `dna`, `brain`, `scale`, `moon`, `pill`, `utensils`, `dumbbell`, `sofa`, `gavel`, `stethoscope`, `route`, `pointer`, `heart-pulse`, `trees`…; lista em `render/node_modules/lucide-static/icons/`), `x`, `y`, `size`, `cor` (`accent`/`text`/`muted`), `rotulo`, `fundo` (disco escuro, padrão sim), `pulso`, `desenhar` (s)
+- `diagrama`: fatores ao redor de um centro, ligados por linhas: `itens` [{`icone`, `rotulo`, `em`}], `centro` {`icone`, `texto`}, `x`, `y`, `raio`, `arco` (`cheio`/`superior`/`inferior`), `convergir_em` (s: tudo converge ao centro)
+- `balanca`: comparação que pesa: `esquerda`/`direita` {`rotulo`, `icone`, `em`}, `inclinar_para`, `inclinar_em`, `riscar` (lado), `riscar_em`, `titulo`, `x`, `y` (pivô), `largura`
+- `grafico`: `tipo` (`barras`/`rosca`), `dados` [{`rotulo`, `valor`, `destaque`}], `sufixo`, `titulo`, `x`, `y`, `largura`
+- `marcador`: traço "à mão": `tipo` (`circulo`/`sublinhado`/`seta`/`x`/`check`), `x`, `y`, `largura`, `altura`, `angulo`, `cor`, `espessura`
+- `texto_fundo`: palavra grande **atrás da pessoa** (o render recorta a pessoa automaticamente): `texto`, `y`, `size`, `cor`, `peso`, `entrada` (`subir`/`escala`/`revelar`). Use nas áreas atrás da cabeça/ombros.
 - `cartao`: `src` (imagem/vídeo/print) **ou** `titulo` + `texto` + `rotulo_topo`; `posicao` (`topo`/`centro`/0–1), `largura`, `proporcao`, `limite`, `rotulo` (chip), `rotacao`, `ajuste`
 - Componentes customizados de modelos criados a partir de referência: veja o `REGRAS.md` do modelo.
 
 Qualquer overlay aceita `anchor` (`start`/`end`/`full`) + `duration`/`offset` em vez de `start`/`end`, e `props.formats` para aparecer só em certos formatos.
+
+## 3b. Roteiro visual (obrigatório quando houver motion)
+Antes de posicionar motion, escreva `JOB/roteiro_visual.md`: uma tabela **tempo → fala (resumo) → ideia → representação visual → componente**.
+- **Não repita a fala em texto** (a legenda já faz isso). Motion **representa**: metáfora (balança, convergência, causa→efeito), dado (gráfico), objeto/ícone (DNA = genética, cérebro = saúde mental, prato = dieta, lua = sono, pílula = remédio, martelo = julgamento, estetoscópio = cuidado), contraste (mito riscado × fato) ou interação com a pessoa (texto atrás dela, marcador desenhado apontando/circulando algo). Texto, no máximo 1–3 palavras-âncora.
+- Pode ir **além da fala**, com contexto que enriquece: dados da legenda do post, fatores relacionados. Nunca invente dados nem promessas (em saúde, ver `regras/saude.md`).
+- Ritmo: 1 beat forte a cada 4–8s, com respiro. Menos elementos, mais significado. Uma cena de tela cheia (`cena` + diagrama/gráfico) curta (≤6s) é ótima para listas e explicações.
+- Mostre o roteiro ao usuário (é curto) junto com a primeira prévia.
 
 ## 4. Validar e pré-visualizar
 ```bash

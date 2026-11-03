@@ -301,6 +301,16 @@ def main():
     public = build / "public"
     redl, rbrand, video = prepare_public(edl, brand, cut, base, public)
 
+    # texto atrás da pessoa: recorta a pessoa do vídeo já cortado (com cache pelo nome do pré-corte)
+    pessoa = None
+    if any(o.get("type") == "texto_fundo" for o in edl.get("overlays", [])):
+        webm = build / f"pessoa_{cut.stem}.webm"
+        if not webm.exists():
+            log("recortando a pessoa (texto atrás da pessoa)…")
+            run([sys.executable, str(Path(__file__).parent / "segmentar.py"), str(cut), str(webm)], capture=False)
+        link(webm, public / "pessoa.webm")
+        pessoa = "pessoa.webm"
+
     formats = args.formats or edl["formats"]
     safe_tpl = tpl.get("safe_zones", {})
     jobs = []
@@ -317,6 +327,7 @@ def main():
         props = {
             "edl": redl, "brand": rbrand, "format": fmt, "width": w, "height": h, "video": video,
             "sourceSize": cut_size, "safe": {**DEFAULT_SAFE[fmt], **safe_tpl.get(fmt, {})},
+            **({"pessoa": pessoa} if pessoa else {}),
         }
         if args.preview:
             jobs.append({"props": props, "out": str(out_dir), "stills": stills})
