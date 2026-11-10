@@ -76,6 +76,16 @@ python3 engine/ranking_instagram.py PERFIL
    Gera `PERFIL/ranking/ranking.md`, com o top 30 de cada tipo por **desempenho relativo** (vídeos por views; imagens e carrosséis por curtidas + comentários, porque o Instagram não informa views de foto), e `baixar.sh`, com os comandos para baixar só os escolhidos.
 3. Baixe só as referências escolhidas (`instaloader -- -CODIGO`) e peça: "cria um modelo a partir desses vídeos".
 
+## Automação: Telegram → edição → aprovação → Instagram
+
+A pasta `automacao/` transforma o editor num serviço que roda sozinho:
+1. O Dr. Clayton manda o **vídeo bruto no Telegram** com o pedido ("capa-fala, postar quinta 19h").
+2. O agente (Claude Agent SDK + as skills deste plugin) **edita** e escreve a **legenda do post**.
+3. A prévia chega no Telegram com **Aprovar / Ajustar / Descartar**.
+4. No horário, o Reels é **publicado** pela API oficial do Instagram, e o bot avisa com o link.
+
+Roda em Docker, igual no PC do Instituto e num servidor na nuvem. Instalação, credenciais, modo ensaio e migração: **[automacao/DEPLOY.md](automacao/DEPLOY.md)**.
+
 ## Como funciona
 
 ```

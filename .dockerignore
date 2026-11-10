@@ -1,0 +1,8 @@
+.git
+**/node_modules
+**/__pycache__
+dados
+automacao/.env
+render/src/lib/icons.generated.json
+render/src/components/custom/user/*.tsx
+edicoes

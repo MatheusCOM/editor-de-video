@@ -1,0 +1,31 @@
+# Sobe tudo com: docker compose up -d   (rodar dentro da pasta automacao/)
+# Funciona igual no PC do Instituto (Docker Desktop) e no VPS. Estado: ../dados e .env
+services:
+  telegram-bot-api:
+    # Servidor local da Bot API do Telegram: permite receber vídeos de até 2 GB (na nuvem o limite é 20 MB)
+    image: aiogram/telegram-bot-api:latest
+    restart: unless-stopped
+    environment:
+      TELEGRAM_API_ID: ${TELEGRAM_API_ID}
+      TELEGRAM_API_HASH: ${TELEGRAM_API_HASH}
+      TELEGRAM_LOCAL: "1"
+    volumes:
+      - telegram-arquivos:/var/lib/telegram-bot-api
+
+  editor:
+    build:
+      context: ..
+      dockerfile: automacao/Dockerfile
+    restart: unless-stopped
+    depends_on: [telegram-bot-api]
+    env_file: .env
+    environment:
+      TELEGRAM_API_URL: http://telegram-bot-api:8081
+      DADOS_DIR: /app/dados
+    volumes:
+      - ../dados:/app/dados
+      # mesmo caminho do servidor local, para o bot ler os vídeos recebidos direto do disco
+      - telegram-arquivos:/var/lib/telegram-bot-api:ro
+
+volumes:
+  telegram-arquivos:
