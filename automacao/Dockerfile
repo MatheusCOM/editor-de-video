@@ -14,8 +14,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN useradd -m -u 1000 editor
 WORKDIR /app
 
-COPY requirements.txt automacao/requirements.txt /tmp/req/
-RUN pip install --no-cache-dir -r /tmp/req/requirements.txt -r /tmp/req/automacao/requirements.txt ai-edge-litert
+# cada arquivo com um nome próprio (COPY de vários arquivos para uma pasta achata os nomes)
+COPY requirements.txt /tmp/req/base.txt
+COPY automacao/requirements.txt /tmp/req/automacao.txt
+RUN pip install --no-cache-dir -r /tmp/req/base.txt -r /tmp/req/automacao.txt ai-edge-litert
 
 COPY --chown=editor:editor . /app
 USER editor

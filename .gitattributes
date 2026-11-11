@@ -1,0 +1,7 @@
+# Mantém finais de linha Linux (LF) mesmo em clones no Windows: o código roda dentro do container Linux.
+* text=auto eol=lf
+*.woff2 binary
+*.png binary
+*.jpg binary
+*.mp4 binary
+*.tflite binary
