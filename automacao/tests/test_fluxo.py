@@ -257,3 +257,64 @@ def test_opcoes_do_agente(tmp_path):
     assert o.model == "claude-opus-5-5" and o.max_budget_usd == 2.5
     assert o.output_format["schema"] is SCHEMA_RESULTADO
     assert (ROOT / ".claude-plugin" / "plugin.json").exists()
+
+
+def test_notificador_nao_derruba_quando_telegram_recusa(tmp_path, capsys):
+    from telegram.error import BadRequest
+
+    from automacao.bot import NotificadorTelegram
+
+    class BotFalso:
+        async def send_message(self, *a, **k):
+            raise BadRequest("Chat not found")
+
+        async def send_video(self, *a, **k):
+            raise BadRequest("Chat not found")
+
+    class AppFalso:
+        bot = BotFalso()
+
+    n = NotificadorTelegram(AppFalso())
+    video = tmp_path / "v.mp4"
+    video.write_bytes(b"x")
+
+    async def go():
+        await n.texto(42, "oi")
+        await n.video(42, video, "legenda", None)
+
+    asyncio.run(go())  # não levanta
+    err = capsys.readouterr().err
+    assert "Iniciar" in err and "42" in err
+
+
+def test_on_video_avisa_quando_nao_consegue_ler(tmp_path):
+    from automacao.bot import Bot
+
+    cfg = Config(telegram_token="123:ABC", usuarios_autorizados={1}, dados=tmp_path,
+                 telegram_api_url="http://local:8081")
+    fila = Fila(cfg.db_path)
+    b = Bot(cfg, lambda n: Servico(cfg, fila, EditorSimulado(), n, None))
+    respostas = []
+
+    class Arq:
+        async def download_to_drive(self, destino):
+            raise PermissionError(13, "Permission denied")
+
+    class Anexo:
+        file_size, file_name, file_unique_id = 10, "v.mp4", "u1"
+
+        async def get_file(self):
+            return Arq()
+
+    class Msg:
+        video, document, caption, chat_id = Anexo(), None, "capa-fala, assim que aprovar", 1
+
+        async def reply_text(self, t):
+            respostas.append(t)
+
+    class Upd:
+        effective_user = type("U", (), {"id": 1})()
+        effective_message = Msg()
+
+    asyncio.run(b.on_video(Upd(), None))
+    assert "permissão" in respostas[-1] and fila.listar() == []

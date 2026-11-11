@@ -7,8 +7,12 @@ import re
 from datetime import datetime, time as dtime
 from pathlib import Path
 
+import sys
+import traceback
+
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.constants import ParseMode
+from telegram.error import BadRequest, Forbidden, TelegramError
 from telegram.ext import (Application, ApplicationBuilder, CallbackQueryHandler, CommandHandler, ContextTypes,
                           MessageHandler, filters)
 
@@ -34,23 +38,47 @@ def _teclado(botoes: list[Botao] | None):
     return InlineKeyboardMarkup([[InlineKeyboardButton(b.texto, callback_data=b.dado) for b in botoes]])
 
 
+def log(*a):
+    print("[bot]", *a, file=sys.stderr, flush=True)
+
+
+def _explicar(chat_id: int, e: Exception) -> str:
+    if isinstance(e, (Forbidden, BadRequest)) and ("chat not found" in str(e).lower() or isinstance(e, Forbidden)):
+        return (f"não consegui falar com {chat_id}: essa pessoa precisa abrir o bot no Telegram e tocar em "
+                f"Iniciar (e o ID em TELEGRAM_USUARIOS precisa estar certo)")
+    return f"falha ao enviar para {chat_id}: {e}"
+
+
 class NotificadorTelegram:
+    """Notificação é melhor-esforço: falhar ao avisar nunca derruba edição, fila ou publicação."""
+
     def __init__(self, app: Application):
         self.app = app
 
     async def texto(self, chat_id: int, msg: str, botoes: list[Botao] | None = None) -> None:
-        await self.app.bot.send_message(chat_id, _html(msg)[:4096], parse_mode=ParseMode.HTML,
-                                        reply_markup=_teclado(botoes))
+        try:
+            await self.app.bot.send_message(chat_id, _html(msg)[:4096], parse_mode=ParseMode.HTML,
+                                            reply_markup=_teclado(botoes))
+        except TelegramError as e:
+            log(_explicar(chat_id, e))
 
     async def video(self, chat_id: int, arquivo: Path, legenda: str, botoes: list[Botao] | None = None) -> None:
-        with open(arquivo, "rb") as f:
-            await self.app.bot.send_video(chat_id, f, caption=_html(legenda)[:1024], parse_mode=ParseMode.HTML,
-                                          reply_markup=_teclado(botoes), supports_streaming=True,
-                                          read_timeout=600, write_timeout=600)
+        try:
+            with open(arquivo, "rb") as f:
+                await self.app.bot.send_video(chat_id, f, caption=_html(legenda)[:1024], parse_mode=ParseMode.HTML,
+                                              reply_markup=_teclado(botoes), supports_streaming=True,
+                                              read_timeout=600, write_timeout=600)
+        except (TelegramError, OSError) as e:
+            log(_explicar(chat_id, e))
+            # sem o vídeo, ao menos o texto com os botões, para o job não ficar preso sem aprovação
+            await self.texto(chat_id, f"(não consegui enviar o vídeo: {e})\n\n{legenda}", botoes)
 
     async def foto(self, chat_id: int, arquivo: Path, legenda: str = "") -> None:
-        with open(arquivo, "rb") as f:
-            await self.app.bot.send_photo(chat_id, f, caption=_html(legenda)[:1024], parse_mode=ParseMode.HTML)
+        try:
+            with open(arquivo, "rb") as f:
+                await self.app.bot.send_photo(chat_id, f, caption=_html(legenda)[:1024], parse_mode=ParseMode.HTML)
+        except (TelegramError, OSError) as e:
+            log(_explicar(chat_id, e))
 
 
 class Bot:
@@ -77,6 +105,7 @@ class Bot:
         a.add_handler(MessageHandler(filters.VIDEO | filters.Document.VIDEO, self.on_video))
         a.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, self.on_texto))
         a.add_handler(CallbackQueryHandler(self.on_botao))
+        a.add_error_handler(self.on_erro)
 
     # ---------------------------------------------------------------- ciclo de vida
     async def _iniciar(self, app: Application):
@@ -168,12 +197,22 @@ class Bot:
             return await msg.reply_text("Esse vídeo passa de 20 MB, o limite do Telegram sem o servidor local "
                                         "(TELEGRAM_API_URL). Configure o Bot API local ou mande um arquivo menor.")
         await msg.reply_text("📥 Recebendo o vídeo…")
-        arq = await anexo.get_file()
-        entrada = self.cfg.dados / "entrada"
-        entrada.mkdir(parents=True, exist_ok=True)
-        nome = getattr(anexo, "file_name", None) or f"{anexo.file_unique_id}.mp4"
-        destino = entrada / f"{datetime.now():%Y%m%d_%H%M%S}_{Path(nome).name}"
-        await arq.download_to_drive(destino)
+        try:
+            arq = await anexo.get_file()
+            entrada = self.cfg.dados / "entrada"
+            entrada.mkdir(parents=True, exist_ok=True)
+            nome = getattr(anexo, "file_name", None) or f"{anexo.file_unique_id}.mp4"
+            destino = entrada / f"{datetime.now():%Y%m%d_%H%M%S}_{Path(nome).name}"
+            await arq.download_to_drive(destino)
+        except PermissionError as e:
+            log(f"sem permissão para ler o vídeo recebido: {e}")
+            return await msg.reply_text(
+                "❌ Não consegui ler o vídeo: falta permissão na pasta do servidor do Telegram. Confira o "
+                "group_add do docker-compose.yml (DEPLOY.md › Problemas comuns) e reenvie.")
+        except Exception as e:  # noqa: BLE001
+            log(f"falha ao baixar o vídeo: {type(e).__name__}: {e}")
+            return await msg.reply_text(f"❌ Não consegui receber o vídeo ({type(e).__name__}). Tente reenviar; "
+                                        "se repetir, veja DEPLOY.md › Problemas comuns.")
         await self.servico.novo_pedido(msg.chat_id, destino, msg.caption or "")
 
     async def on_texto(self, update: Update, ctx: ContextTypes.DEFAULT_TYPE):
@@ -206,3 +245,13 @@ class Bot:
             await self.servico.descartar(jid)
         elif acao == "ajustar":
             await self.servico.iniciar_ajuste(update.effective_chat.id, jid)
+
+    async def on_erro(self, update: object, ctx: ContextTypes.DEFAULT_TYPE):
+        e = ctx.error
+        log("erro não tratado: " + "".join(traceback.format_exception(e)).replace(self.cfg.telegram_token, "<TOKEN>")[-2000:])
+        if isinstance(update, Update) and update.effective_chat and self._autorizado(update):
+            try:
+                await ctx.bot.send_message(update.effective_chat.id, f"⚠️ Algo deu errado: {type(e).__name__}. "
+                                                                     "Tente de novo; se repetir, me avise.")
+            except TelegramError:
+                pass

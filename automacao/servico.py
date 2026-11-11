@@ -163,7 +163,11 @@ class Servico:
 
     async def loop_edicao(self, parar: asyncio.Event):
         while not parar.is_set():
-            job = await self.processar_proximo()
+            try:
+                job = await self.processar_proximo()
+            except Exception as e:  # noqa: BLE001 — nada pode matar a tarefa em segundo plano
+                print(f"[edicao] erro inesperado: {e}", file=sys.stderr)
+                job = None
             if job is None:
                 self._trabalho.clear()
                 try:

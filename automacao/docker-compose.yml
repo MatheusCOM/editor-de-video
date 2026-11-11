@@ -18,6 +18,9 @@ services:
       dockerfile: automacao/Dockerfile
     restart: unless-stopped
     depends_on: [telegram-bot-api]
+    # o telegram-bot-api grava os vídeos com leitura só para o grupo dele (gid 101);
+    # entrar nesse grupo permite ler os arquivos sem chmod e sem rodar como root
+    group_add: ["101"]
     env_file: .env
     environment:
       TELEGRAM_API_URL: http://telegram-bot-api:8081

@@ -11,7 +11,8 @@ Tudo roda em Docker: o mesmo `docker compose up -d` funciona no **PC do Institut
 ### Telegram
 1. No Telegram, fale com **@BotFather** → `/newbot` → escolha nome e @ → copie o **token** para `TELEGRAM_TOKEN`.
 2. Em **https://my.telegram.org** → *API development tools* → crie um app → copie **api_id** e **api_hash** para `TELEGRAM_API_ID` / `TELEGRAM_API_HASH`. Isso habilita o servidor local da Bot API, que aceita vídeos de até 2 GB (sem ele o limite é 20 MB).
-3. IDs autorizados: depois de subir o sistema, quem mandar `/id` ao bot recebe o próprio número. Coloque os números do Dr. Clayton e o seu em `TELEGRAM_USUARIOS`, separados por vírgula, e reinicie. Qualquer outra pessoa é recusada.
+3. **Cada pessoa autorizada precisa abrir o bot no Telegram e tocar em "Iniciar" uma vez.** O Telegram não deixa um bot mandar a primeira mensagem.
+4. IDs autorizados: depois de subir o sistema, quem mandar `/id` ao bot recebe o próprio número. Coloque os números do Dr. Clayton e o seu em `TELEGRAM_USUARIOS`, separados por vírgula, e reinicie. Qualquer outra pessoa é recusada.
 
 ### Anthropic (o "cérebro" da edição)
 - Em **https://console.anthropic.com**: crie a conta, ative a cobrança e gere uma **API key** → `ANTHROPIC_API_KEY`.
@@ -129,5 +130,6 @@ Isso guarda 7 cópias rotativas (uma por dia da semana). Leve uma cópia para fo
 | "passa de 20 MB" | O servidor local da Bot API não está ativo: confira `TELEGRAM_API_ID`/`HASH` e `docker compose ps`. |
 | Edição falha | `/fila` mostra o erro. Verifique `ANTHROPIC_API_KEY` e o saldo. `/refazer N` tenta de novo. |
 | Publicação falha | `/status` testa o token. O sistema tenta 3 vezes (10 e 20 min depois) e avisa. Token expirado: gere outro de usuário do sistema. |
-| Erro de permissão ao ler o vídeo recebido | Rode `docker compose exec telegram-bot-api chmod -R a+rX /var/lib/telegram-bot-api` e reenvie. |
+| Log mostra "Chat not found" | A pessoa ainda não abriu o bot e tocou em **Iniciar**, ou o ID em `TELEGRAM_USUARIOS` está errado (use o número do @userinfobot, não o do token). |
+| "Não consegui ler o vídeo: falta permissão" | O editor precisa estar no grupo do servidor do Telegram (`group_add: ["101"]` no `docker-compose.yml`). Se a imagem do servidor mudar de grupo, descubra o número com `docker compose exec telegram-bot-api id` e ajuste. |
 | PC reiniciou | O Docker Desktop sobe no login e o compose religa sozinho (`restart: unless-stopped`). Jobs que estavam no meio voltam para a fila. |
