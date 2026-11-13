@@ -47,7 +47,9 @@ def main():
         import anthropic
         cliente_ia = anthropic.Anthropic()
     publicador = None
-    if not cfg.modo_ensaio:
+    # com credenciais, cria o publicador mesmo em ensaio: o /status testa a conexão,
+    # e o Servico não publica enquanto MODO_ENSAIO=1
+    if cfg.ig_user_id and cfg.ig_token:
         from .instagram import Instagram
         publicador = Instagram(cfg.ig_user_id, cfg.ig_token, cfg.graph_versao)
 
