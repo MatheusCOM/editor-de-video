@@ -21,6 +21,8 @@ services:
     # o telegram-bot-api grava os vídeos com leitura só para o grupo dele (gid 101);
     # entrar nesse grupo permite ler os arquivos sem chmod e sem rodar como root
     group_add: ["101"]
+    # o Chrome do Remotion usa /dev/shm; o padrão do Docker (64 MB) é pouco e pode travar frames no render
+    shm_size: "2gb"
     env_file: .env
     environment:
       TELEGRAM_API_URL: http://telegram-bot-api:8081

@@ -12,10 +12,12 @@ Herda a mecânica do `reels` (retakes, sync, transcrição). Modelo neutro: core
 
 ## Cortes e ritmo
 - Corte toda pausa acima de ~0,3s, além de hesitações e retakes. O resultado é uma fala corrida e densa (~200 palavras/min).
+- Só cortes técnicos: nenhuma frase ou ideia sai do vídeo sem o usuário pedir (ver "Cortes: só técnicos" na skill).
 - **Sem zoom** (nem de ênfase) e sem efeitos: a energia vem da fala.
 
 ## Legendas
-- Discretas: fonte do corpo, peso 600, 1 a 2 linhas, sem palavra destacada, perto do pé do vídeo (~86% da altura). Servem para quem assiste sem som, não como efeito.
+- Fonte do corpo, peso 600, 1 linha curta (até ~4 palavras), perto do pé do vídeo (~84% da altura).
+- **A palavra que está sendo falada fica destacada** na cor de acento (`style: pop`). Nunca use legenda sem destaque (`plain`).
 
 ## Estrutura (medida na referência)
 1. **Gancho (0–5s)**: frase provocativa que antecipa a objeção ("Você pode ficar com raiva do que eu vou te falar, mas…") + a tese.

@@ -21,7 +21,7 @@ import shutil
 import sys
 from pathlib import Path
 
-from common import FORMATS, RENDER_DIR, USER_HOME, load_brand, load_json, load_template, log, probe, require_bin, run, save_json
+from common import FORMATS, RENDER_DIR, USER_HOME, fmt_time, load_brand, load_json, load_template, log, probe, require_bin, run, save_json
 from validate_edl import validate
 
 DEFAULT_SAFE = {
@@ -189,6 +189,38 @@ def mix_audio(edl: dict, voice: Path, base: Path, build: Path) -> Path:
 
 
 # ------------------------------------------------------------------ Remotion
+def congelamentos(video: Path, crop: str | None = None, min_s: float = 0.5) -> list[tuple[float, float]]:
+    """Trechos em que a imagem fica parada (frames idênticos) por mais de min_s. Fala filmada nunca fica
+    100% parada, então isso indica problema: no pré-corte (fonte/corte) ou no render (Remotion)."""
+    vf = (f"crop={crop}," if crop else "") + f"freezedetect=n=-60dB:d={min_s}"
+    r = run(["ffmpeg", "-hide_banner", "-nostats", "-i", str(video), "-vf", vf, "-an", "-f", "null", "-"], check=False)
+    ini = [float(x) for x in re.findall(r"freeze_start: ([\d.]+)", r.stderr)]
+    fim = [float(x) for x in re.findall(r"freeze_end: ([\d.]+)", r.stderr)]
+    return [(a, fim[i] if i < len(fim) else None) for i, a in enumerate(ini)]
+
+
+def checar_congelamento(cut: Path, final: Path, edl: dict, build: Path):
+    def fmt(lst):
+        return ", ".join(f"{fmt_time(a)}–{fmt_time(b) if b is not None else 'fim'}" for a, b in lst)
+    no_corte = congelamentos(cut)
+    region = (edl.get("reframe") or {}).get("region") or {}
+    top, bot = region.get("top", 0.0), region.get("bottom", 1.0)
+    # faixa do meio da área do vídeo (rosto), longe da legenda e das faixas de título
+    a = top + (bot - top) * 0.15
+    h = (bot - top) * 0.45
+    no_final = congelamentos(final, crop=f"iw*0.6:ih*{h:.3f}:iw*0.2:ih*{a:.3f}")
+    save_json({"pre_corte": no_corte, "final": no_final}, build / "congelamentos.json")
+    if no_corte:
+        log(f"AVISO: imagem congelada já no pré-corte em {fmt(no_corte)} (tempo de saída). Causa: fonte "
+            "(frames repetidos no bruto) ou segmentos. Confira esses cortes.")
+    if no_final:
+        log(f"AVISO: imagem congelada no vídeo final em {fmt(no_final)} (tempo de saída)"
+            + ("" if no_corte else ", mas não no pré-corte: problema no render (Remotion). Renderize de novo")
+            + ". Se for um overlay de tela cheia parado de propósito, ignore.")
+    if not no_corte and not no_final:
+        log("sem imagem congelada")
+
+
 def link(src: Path, dst: Path):
     dst.parent.mkdir(parents=True, exist_ok=True)
     if dst.exists() or dst.is_symlink():
@@ -360,6 +392,7 @@ def main():
              "-shortest", "-movflags", "+faststart", str(final)])
         results.append(str(final))
         log("✔", final)
+        checar_congelamento(cut, final, edl, build)
     print("\n".join(results))
 
 

@@ -56,8 +56,24 @@ def segments_from_words(words, cut, duration):
             out[-1]["out"] = round(b, 3)
         else:
             out.append({"in": round(a, 3), "out": round(b, 3)})
+    # trecho curto (ex.: um "Sim." isolado) é FALA: nunca descartar. Junta com o vizinho mais próximo,
+    # mantendo a pausa entre eles, para não gerar um corte picado.
     min_len = cut.get("min_segment", 0.25)
-    return [s for s in out if s["out"] - s["in"] >= min_len] or out
+    i = 0
+    while len(out) > 1 and i < len(out):
+        s = out[i]
+        if s["out"] - s["in"] >= min_len:
+            i += 1
+            continue
+        gap_prev = s["in"] - out[i - 1]["out"] if i > 0 else float("inf")
+        gap_next = out[i + 1]["in"] - s["out"] if i + 1 < len(out) else float("inf")
+        if gap_prev <= gap_next:
+            out[i - 1]["out"] = s["out"]
+            out.pop(i)
+        else:
+            out[i + 1]["in"] = s["in"]
+            out.pop(i)
+    return out
 
 
 def segments_from_silence(src, cut, duration):

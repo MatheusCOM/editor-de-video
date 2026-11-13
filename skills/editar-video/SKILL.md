@@ -33,13 +33,23 @@ python3 $ROOT/engine/edl.py draft --source BRUTO.mp4 --template MODELO --brand M
 Isso aplica as regras mecânicas do modelo (cortes de pausa, hesitações, zoom de jump cut, overlays padrão, enquadramento por rosto) e imprime a **linha do tempo** (`JOB/timeline.txt`).
 
 ## 3. Decisões editoriais (o seu trabalho)
+
+### Cortes: só técnicos (vale para todos os modelos e tem prioridade sobre o REGRAS.md deles)
+- **Pode cortar sem perguntar**: pausas e silêncios, hesitações ("é…", "ãh", "hum"), respiração e **retakes** (a mesma frase dita de novo logo em seguida porque a pessoa errou: fica a última versão completa).
+- **Não corte conteúdo sem o usuário pedir**: nenhuma frase, ideia, exemplo, introdução ou despedida sai do vídeo, mesmo que pareça fraca, longa ou que vá contra as regras do segmento (ex.: promessa de resultado em saúde). Se foi falado, há um motivo; quem decide é o usuário, depois de ver o vídeo editado.
+- Também não reordene a fala sem pedir (ex.: trazer o gancho do meio para o começo).
+- O que você cortaria ou moveria vira **sugestão**: liste com o tempo e o motivo (no modo automático, em `pendencias`; ex.: "0:42–0:47 'garanto que você emagrece': promessa de resultado (CFM). Cortar?"). Também não reforce esse trecho na tela (legenda normal, sem motion).
+- Ao conferir, compare a transcrição com a fala de saída do `sync`: toda frase do bruto tem que estar lá (exceto retakes).
+
+### Legendas
+- A palavra que está sendo falada fica destacada (`captions.style`: `pop`, `box` ou `karaoke`). Não use `plain`.
 Leia **`REGRAS.md` do modelo** (caminho em `templates.py MODELO`; se ele tiver `extends`, leia também as regras do modelo-pai) e a transcrição. Depois edite:
 
 | O quê | Onde | Tempo |
 |---|---|---|
 | Erros de transcrição, nomes, números | `transcript.json` → `words[].text` | bruto |
 | Palavras de destaque / emoji na legenda | `transcript.json` → `words[].emphasis: true`, `words[].emoji` | bruto |
-| Retakes, frases ruins, ordem (gancho primeiro) | `edl.json` → `segments` (a ordem da lista = ordem final) | bruto |
+| Retakes (frases ruins/ordem só se o usuário pedir) | `edl.json` → `segments` (a ordem da lista = ordem final) | bruto |
 | Acelerar trecho | `segments[].speed` (ex.: 1.2) | — |
 | Zooms de ênfase | `edl.json` → `zooms` (`smooth`/`punch`/`slow`, `scale`) | **saída** |
 | Textos e motion graphics | `edl.json` → `overlays` | **saída** |
@@ -100,7 +110,11 @@ python3 $ROOT/engine/render.py JOB/edl.json --preview --at 0.5 3.2 12
 ```bash
 python3 $ROOT/engine/render.py JOB/edl.json
 ```
-Saída: `JOB/out/<bruto>_<modelo>_<formato>.mp4` (H.264 + AAC, −14 LUFS por padrão). Leva alguns minutos por formato. Entregue os arquivos (no app, envie com a ferramenta de arquivos) com um resumo curto das decisões: o que cortou, gancho escolhido, overlays, duração final. Também ofereça ajustes.
+Saída: `JOB/out/<bruto>_<modelo>_<formato>.mp4` (H.264 + AAC, −14 LUFS por padrão). Leva alguns minutos por formato.
+
+No fim, o render procura **imagem congelada** (frames idênticos por mais de 0,5s) no pré-corte e no vídeo final e grava `build/congelamentos.json`. Se houver aviso, olhe os frames desses tempos e corrija antes de entregar: no pré-corte, a causa é a fonte ou o segmento; só no final, renderize de novo. Um overlay de tela cheia parado de propósito pode ser ignorado.
+
+Entregue os arquivos (no app, envie com a ferramenta de arquivos) com um resumo curto: cortes técnicos feitos, **trechos que você sugere cortar** (com tempo e motivo), overlays, duração final. Também ofereça ajustes.
 
 ## Ajustes pedidos pelo usuário
 Traduza o pedido para mudanças no EDL ou na transcrição, rode `sync` → `--preview` → render. Exemplos: "legenda maior" → `captions.size`; "tira o zoom do segundo 12" → remova o item de `zooms`; "começa direto na frase X" → reordene ou remova `segments`; "mais rápido" → reduza `cut.max_pause` (refaça o draft) ou use `speed`. Se o pedido for uma **preferência permanente** do modelo, proponha atualizar `template.json`/`REGRAS.md` do modelo.

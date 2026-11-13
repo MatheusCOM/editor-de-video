@@ -10,7 +10,7 @@ Objetivo: reter a atenção do primeiro ao último segundo. Vertical 9:16, ritmo
 - "tipo" e "né" ficam, a menos que apareçam em excesso (mais de 1 a cada 10s). Aí remova os de "muleta", ajustando `segments`.
 
 ## Gancho (0–2s)
-- A primeira frase precisa prender. Se o melhor gancho estiver no meio do vídeo (uma afirmação forte, um resultado, uma pergunta), **mova esse trecho para o começo**: os segments podem ficar fora da ordem do bruto (o render respeita a ordem da lista). Só faça isso se a frase fizer sentido sozinha.
+- A primeira frase precisa prender. Se o melhor gancho estiver no meio do vídeo (uma afirmação forte, um resultado, uma pergunta), **sugira** movê-lo para o começo (no modo automático: em `pendencias`, com o tempo da frase). Só mova se o usuário pedir: os segments podem ficar fora da ordem do bruto (o render respeita a ordem da lista).
 - Preencha o `title` inicial ({{GANCHO}}) com 3 a 7 palavras que resumam a promessa do vídeo. Use `*palavra*` para destacar 1 palavra na cor de acento. Não repita literalmente o que está sendo falado; complemente.
 
 ## Legendas

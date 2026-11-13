@@ -18,7 +18,7 @@ SCHEMA_RESULTADO = {
     "properties": {
         "video_final": {"type": "string", "description": "caminho do mp4 final (9x16), relativo à pasta do job"},
         "previa": {"type": "string", "description": "caminho da folha de prévia (jpg), relativo à pasta do job"},
-        "roteiro_resumo": {"type": "string", "description": "3 a 8 linhas: o que foi cortado e cada motion usado"},
+        "roteiro_resumo": {"type": "string", "description": "3 a 8 linhas: cortes técnicos feitos e cada motion usado"},
         "legenda": {"type": "string", "description": "legenda do post do Instagram, pronta para publicar, com hashtags no fim"},
         "pendencias": {"type": "array", "items": {"type": "string"},
                        "description": "o que precisa de decisão humana ou ficou pendente (ex.: CRM vazio)"},
@@ -45,13 +45,21 @@ precisa do cliente (ex.: registro profissional vazio, dado que você não pode c
 errado e só então faça o render final em 9x16.
 3. Escreva a legenda do post no tom da marca, respeitando as regras do segmento (em saúde: sem \
 promessa de resultado, sem sensacionalismo), com 3 a 8 hashtags relevantes no final.
-4. Não publique nada e não acesse contas: só edite.
-5. Responda no final apenas com o JSON pedido (caminhos relativos a esta pasta).
+4. Cortes só técnicos: pausas, hesitações e retakes. NÃO corte nem reordene conteúdo falado, mesmo \
+que pareça fraco ou vá contra as regras do segmento (ex.: promessa de resultado). Liste em \
+`pendencias` o que você cortaria, com tempo e motivo, para o cliente decidir no ajuste.
+5. Legenda sempre com a palavra falada destacada (nunca `plain`).
+6. Depois do render final, leia os avisos de "imagem congelada" no log. Se houver, descubra a causa \
+(segmento, fonte ou render), corrija e renderize de novo; se não der para resolver, avise em `pendencias` \
+com os tempos.
+7. Não publique nada e não acesse contas: só edite.
+8. Responda no final apenas com o JSON pedido (caminhos relativos a esta pasta).
 """
 
 INSTRUCOES_AJUSTE = """\
 O cliente viu o vídeo e pediu este ajuste: "{feedback}".
-Aplique o ajuste no EDL (e na legenda, se for o caso), refaça a prévia, confira, faça o render final \
+Aplique o ajuste no EDL (e na legenda, se for o caso). Se o cliente pedir para cortar um trecho \
+(inclusive um sugerido em `pendencias`), agora pode cortar. Depois refaça a prévia, confira, faça o render final \
 de novo e responda com o mesmo JSON (atualizado). Se o pedido for impossível ou contrariar as regras \
 da marca/segmento, faça o mais próximo possível e explique em `pendencias`.
 """
