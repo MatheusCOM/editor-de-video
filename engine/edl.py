@@ -31,13 +31,30 @@ def norm(w: str) -> str:
     return re.sub(r"[^\wà-ú]", "", w.lower())
 
 
+# "é" e "eh" também são palavras ("você é gordo"): só contam como hesitação quando arrastadas ou isoladas
+AMBIGUOUS = {"é", "eh"}
+
+
+def is_hesitation(words, i) -> bool:
+    w = words[i]
+    n = norm(w["text"])
+    if n not in HESITATIONS:
+        return False
+    if n not in AMBIGUOUS:
+        return True
+    longa = w["end"] - w["start"] >= 0.45
+    antes = w["start"] - words[i - 1]["end"] if i > 0 else 9.0
+    depois = words[i + 1]["start"] - w["end"] if i + 1 < len(words) else 9.0
+    return longa or (antes >= 0.3 and depois >= 0.3)
+
+
 # ---------------------------------------------------------------- segmentos
 def segments_from_words(words, cut, duration):
     pad_in = cut.get("pad_before", 0.08)
     pad_out = cut.get("pad_after", 0.14)
     max_pause = cut.get("max_pause", 0.35)
     drop_hes = cut.get("remove_hesitations", True)
-    keep = [w for w in words if not (drop_hes and norm(w["text"]) in HESITATIONS)]
+    keep = [w for i, w in enumerate(words) if not (drop_hes and is_hesitation(words, i))]
     if not keep:
         return [{"in": 0.0, "out": round(duration, 3)}]
     segs = []
@@ -107,12 +124,13 @@ def total_duration(segments):
 def map_words(words, segments):
     """Leva palavras do tempo do bruto para o tempo de saída."""
     out, offset = [], 0.0
+    hes = {i for i in range(len(words)) if is_hesitation(words, i)}
     for s in segments:
-        for w in words:
+        for i, w in enumerate(words):
             if w.get("drop"):
                 continue
             mid = (w["start"] + w["end"]) / 2
-            if s["in"] <= mid < s["out"] and norm(w["text"]) not in HESITATIONS:
+            if s["in"] <= mid < s["out"] and i not in hes:
                 sp = s.get("speed", 1) or 1
                 o = {
                     "text": w["text"],

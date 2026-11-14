@@ -43,6 +43,7 @@ export type CaptionStyle = {
   max_chars?: number;
   lines?: number;
   position?: number; // 0..1 (centro vertical do bloco)
+  x?: number; // 0..1 (centro horizontal; omitido = largura toda, centralizado)
   size?: number; // fração da largura (altura da fonte)
   uppercase?: boolean;
   color?: string;

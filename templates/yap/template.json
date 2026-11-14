@@ -1,0 +1,30 @@
+{
+  "description": "Yap: fala corrida em tela cheia, olhando para a câmera, com cabeçalho de contexto no topo que troca a cada ideia (títulos, citações digitando, números com emoji, listas que crescem), imagens pequenas coladas no canto e legenda curta ao lado do rosto. Ótimo para série de episódios, bastidores e opinião.",
+  "extends": "reels",
+  "formats": ["9x16"],
+  "reframe": {"mode": "cover"},
+  "cut": {"max_pause": 0.2, "pad_before": 0.05, "pad_after": 0.1, "min_segment": 0.3},
+  "captions": {
+    "style": "pop",
+    "reveal": "page",
+    "words_per_line": 2,
+    "max_chars": 16,
+    "position": 0.6,
+    "x": 0.7,
+    "size": 0.042,
+    "uppercase": false,
+    "stroke": 0,
+    "shadow": true,
+    "animation": "none",
+    "emphasis_scale": 1.0,
+    "font": "caption"
+  },
+  "zoom": {"jump_cut_scale": null, "emphasis_scale": 1.08, "emphasis_every": [8, 14]},
+  "overlays": [
+    {"type": "cabecalho", "anchor": "start", "duration": 3.0, "props": {"linhas": [{"texto": "{{CABECALHO_GANCHO}}"}]}},
+    {"type": "assinatura", "anchor": "start", "offset": 3.2, "duration": 3.5, "props": {"position": 0.84}}
+  ],
+  "grade": {"contrast": 1.03, "saturation": 1.0, "warmth": 0.12},
+  "audio": {"loudness_lufs": -14, "denoise": true, "music": null, "sfx": []},
+  "safe_zones": {"9x16": {"top": 0.07, "bottom": 0.14}}
+}

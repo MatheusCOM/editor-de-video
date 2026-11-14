@@ -86,6 +86,9 @@ Placeholders `{{...}}` nos overlays do modelo (ex.: `{{GANCHO}}`, `{{CTA_TITULO}
 - `grafico`: `tipo` (`barras`/`rosca`), `dados` [{`rotulo`, `valor`, `destaque`}], `sufixo`, `titulo`, `x`, `y`, `largura`
 - `marcador`: traço "à mão": `tipo` (`circulo`/`sublinhado`/`seta`/`x`/`check`), `x`, `y`, `largura`, `altura`, `angulo`, `cor`, `espessura`
 - `texto_fundo`: palavra grande **atrás da pessoa** (o render recorta a pessoa automaticamente): `texto`, `y`, `size`, `cor`, `peso`, `entrada` (`subir`/`escala`/`revelar`). Use nas áreas atrás da cabeça/ombros.
+- `cabecalho`: texto de contexto no topo, sem caixa (branco com sombra), trocando a cada ideia (modelo `yap`). `linhas`: [{`texto` (`*destaque*`), `estilo` (`titulo`/`sub`/`item`/`citacao`/`numero`), `icone` (`x`/`check`/emoji), `em` (s desde o início, para listas que crescem), `maquina`/`dur_maquina` (digitação; padrão nas citações)}], `emojis` (fileira que entra em pop), `italico`, `y`, `tamanho`.
+- `recorte`: imagem pequena colada no canto (print de estudo/post, foto) com borda branca e sombra: `src`, `x`, `y`, `largura` (fração), `giro` (graus), `legenda` (fonte, embaixo). Print de página pública: Chromium do sistema via Playwright (`chromium.launch()`; se houver `HTTPS_PROXY`, passe `proxy: {server: HTTPS_PROXY}`), `element.screenshot`.
+- Legenda ao lado do rosto: `captions.x` (0–1) põe a legenda numa faixa centrada em x, presa nas margens.
 - `cartao`: `src` (imagem/vídeo/print) **ou** `titulo` + `texto` + `rotulo_topo`; `posicao` (`topo`/`centro`/0–1), `largura`, `proporcao`, `limite`, `rotulo` (chip), `rotacao`, `ajuste`
 - Componentes customizados de modelos criados a partir de referência: veja o `REGRAS.md` do modelo.
 

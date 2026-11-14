@@ -21,6 +21,7 @@ import {
   Title,
 } from "./components/overlays";
 import { Capa, Cartao, Cena, Chips, ItemNumerado } from "./components/overlays/motion";
+import { Cabecalho, Recorte } from "./components/overlays/yap";
 import { Balanca, Diagrama, Grafico, Icone, Marcador, TextoFundo } from "./components/overlays/visual";
 import { VideoLayer } from "./components/VideoLayer";
 import { loadBrandFonts } from "./lib/fonts";
@@ -51,11 +52,13 @@ const registry: Record<string, React.FC<OverlayProps>> = {
   grafico: Grafico,
   marcador: Marcador,
   texto_fundo: TextoFundo,
+  cabecalho: Cabecalho,
+  recorte: Recorte,
   ...customRegistry,
 };
 
 // ordem de empilhamento: o que vem depois fica por cima
-const LAYER: Record<string, number> = { cena: 10, capa: 15, cartao: 40, item_numerado: 45, chips: 46, texto_fundo: 5, flash: 90, cta: 80, progress: 70, logo: 60 };
+const LAYER: Record<string, number> = { recorte: 48, cabecalho: 55, cena: 10, capa: 15, cartao: 40, item_numerado: 45, chips: 46, texto_fundo: 5, flash: 90, cta: 80, progress: 70, logo: 60 };
 
 export const Main: React.FC<MainProps> = (p) => {
   loadBrandFonts(p.brand);

@@ -71,8 +71,9 @@ export const Captions: React.FC<{ cs: CaptionStyle; brand: Brand; safe: Safe }> 
       <div
         style={{
           position: "absolute",
-          left: W * safe.left,
-          right: W * safe.right,
+          // com x: faixa de ~56% da largura centrada em x, presa dentro das margens (palavra longa quebra, não vaza)
+          left: W * (cs.x !== undefined ? Math.max(safe.left, Math.min(cs.x, 1 - safe.right - 0.28) - 0.28) : safe.left),
+          right: W * (cs.x !== undefined ? Math.max(safe.right, 1 - Math.max(cs.x, safe.left + 0.28) - 0.28) : safe.right),
           top: H * pos,
           transform: `translateY(-50%) translateY(${ty}px) scale(${scale})`,
           opacity,
