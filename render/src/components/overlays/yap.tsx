@@ -120,7 +120,7 @@ export const Cabecalho: React.FC<OverlayProps> = ({ props, brand, safe, duration
         })}
         {props.emojis ? (
           <div style={{ display: "flex", gap: 8 * k, marginTop: 4 * k }}>
-            {Array.from(String(props.emojis)).filter((c) => c.trim()).map((e, i) => {
+            {[...new Intl.Segmenter(undefined, { granularity: "grapheme" }).segment(String(props.emojis))].map((g) => g.segment).filter((c) => c.trim()).map((e, i) => {
               const s = spring({ frame: frame - Math.round((props.emojis_em ?? 0.15) * fps) - i * 3, fps, config: { damping: 10, stiffness: 260 } });
               return (
                 <span key={i} style={{ fontSize: W * 0.07 * (props.tamanho ?? 1), transform: `scale(${s})`, display: "inline-block" }}>

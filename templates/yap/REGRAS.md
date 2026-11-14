@@ -9,6 +9,7 @@ Fala corrida, olhando para a câmera, como quem conta algo a um amigo. O formato
 
 ## Layout
 - Pessoa em tela cheia (`reframe: cover`), rosto no terço de cima, sem tarjas.
+- Bruto horizontal ou com a cabeça colada no topo: `reframe.region` `{"top": 0.2, "bottom": 1.0}` com `region_fill: "blur"`, para o cabeçalho não cobrir a cabeça.
 - **Cabeçalho** (`cabecalho`) no topo, sempre presente: um por ideia, trocando com corte seco quando o assunto muda.
 - **Legenda curta** (2 palavras, palavra falada destacada na cor de acento) **ao lado do rosto**, na altura do peito (`captions.x` ≈ 0,7, `position` ≈ 0,6). Se a pessoa estiver à direita do quadro, use `x` ≈ 0,3. Nunca em cima do rosto nem da boca.
 - **Recortes** (`recorte`): imagens pequenas coladas no canto de cima (x 0,75–0,8, y 0,18–0,25), sob o cabeçalho, com borda branca.

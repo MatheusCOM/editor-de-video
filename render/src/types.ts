@@ -93,7 +93,7 @@ export type MainProps = {
     zooms: Zoom[];
     overlays: Overlay[];
     broll: BRoll[];
-    reframe?: { mode?: "cover" | "blur" | "contain"; background?: string; region?: { top?: number; bottom?: number } };
+    reframe?: { mode?: "cover" | "blur" | "contain"; background?: string; region?: { top?: number; bottom?: number }; region_fill?: "blur" };
     style?: Record<string, any>;
   };
   brand: Brand;

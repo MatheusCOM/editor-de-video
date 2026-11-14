@@ -45,6 +45,13 @@ def even(n: float) -> int:
 # ------------------------------------------------------------------ pré-corte
 def grade_filter(g: dict) -> str:
     parts = []
+    if g.get("denoise"):
+        # vídeo escuro/de webcam: reduz o ruído antes de clarear (senão a curva realça o grão)
+        d = float(g["denoise"])
+        parts.append(f"hqdn3d={d}:{d}:{d * 2.5}:{d * 2.5}")
+    if g.get("curves"):
+        # curva de luz (pontos "entrada/saída" de 0 a 1), ex.: "0/0 0.25/0.36 0.5/0.62 0.8/0.88 1/1" clareia médios
+        parts.append(f"curves=master='{g['curves']}'")
     eq = []
     for k, ff in (("brightness", "brightness"), ("contrast", "contrast"), ("saturation", "saturation"), ("gamma", "gamma")):
         if k in g and g[k] is not None:

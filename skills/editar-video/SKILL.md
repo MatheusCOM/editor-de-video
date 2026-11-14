@@ -57,6 +57,11 @@ Leia **`REGRAS.md` do modelo** (caminho em `templates.py MODELO`; se ele tiver `
 | Música / efeitos | `edl.json` → `audio.music`, `audio.sfx`, `audio.sfx_on_cuts` | **saída** |
 | Cor | `edl.json` → `grade` | — |
 
+### Luz e enquadramento do bruto
+- Confira o "Cor" do `analyze.py` (ou um frame): **brilho abaixo de ~0,38 é vídeo escuro**. Corrija em `grade`: `denoise` (1–2, antes de clarear), `curves` (ex.: `"0/0 0.25/0.36 0.5/0.62 0.8/0.88 1/1"` clareia os médios sem estourar), `warmth` negativo para tirar o laranja de luz amarela (−0,3 a −0,5), e `contrast`/`saturation` perto de 1. Teste 2–3 variações num frame com ffmpeg e compare antes de decidir; o objetivo é pele natural, não imagem lavada.
+- **Bruto horizontal com a cabeça colada no topo**: em cover a cabeça fica sob o texto do topo. Use `reframe.region` (ex.: `{"top": 0.2, "bottom": 1.0}`) com `"region_fill": "blur"`: o vídeo desce, o espaço de cima mostra o próprio vídeo desfocado e a borda se dissolve, sem tarja.
+- Áudio baixo (< −20 LUFS) é normalizado para −14 no render; `audio.denoise` ajuda em gravação caseira.
+
 **Depois de mexer em `segments` ou `transcript.json`, SEMPRE rode** `python3 $ROOT/engine/edl.py sync JOB/edl.json`. Ele recalcula a duração, as legendas e os zooms automáticos e imprime a fala já em **tempo de saída**. Use esses tempos para posicionar zooms e overlays.
 
 Placeholders `{{...}}` nos overlays do modelo (ex.: `{{GANCHO}}`, `{{CTA_TITULO}}`) **precisam** ser preenchidos; o validador bloqueia o render enquanto estiverem lá.

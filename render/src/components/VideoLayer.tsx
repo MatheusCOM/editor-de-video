@@ -68,9 +68,18 @@ export const VideoLayer: React.FC<{ p: MainProps; pessoa?: string }> = ({ p, pes
     const { height: H } = useVideoConfig();
     const top = Math.round(H * (region.top ?? 0));
     const h = Math.round(H * ((region.bottom ?? 1) - (region.top ?? 0)));
+    // region_fill "blur": o resto da tela mostra o próprio vídeo desfocado e escurecido, e a borda de cima
+    // da faixa se dissolve nele (bruto horizontal com a cabeça colada no topo, sem tarja dura)
+    const fill = p.edl.reframe?.region_fill === "blur" && !pessoa;
+    const mask = fill ? "linear-gradient(to bottom, transparent 0, black 9%)" : undefined;
     return (
       <AbsoluteFill style={{ backgroundColor: pessoa ? "transparent" : p.edl.reframe?.background || "black" }}>
-        <div style={{ position: "absolute", left: 0, right: 0, top, height: h, overflow: "hidden" }}>
+        {fill ? (
+          <div style={{ position: "absolute", inset: 0, overflow: "hidden", filter: "blur(40px) brightness(0.45) saturate(1.05)" }}>
+            <VideoBox p={p} H={H} />
+          </div>
+        ) : null}
+        <div style={{ position: "absolute", left: 0, right: 0, top, height: h, overflow: "hidden", WebkitMaskImage: mask, maskImage: mask }}>
           <VideoBox p={p} H={h} pessoa={pessoa} />
         </div>
       </AbsoluteFill>
